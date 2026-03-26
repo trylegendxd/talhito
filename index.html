@@ -26,7 +26,7 @@
 
       <nav class="nav-links" id="navLinks">
         <a href="#inicio">Início</a>
-        <a href="#produtos">Produtos</a>
+        <a href="#catalogo">Produtos</a>
         <a href="#servicos">Serviços</a>
         <a href="#sobre">Sobre</a>
         <a href="#contactos">Contactos</a>
@@ -40,45 +40,57 @@
       <div class="container hero-grid">
         <div class="hero-copy">
           <span class="eyebrow">Qualidade • Tradição • Confiança</span>
-          <h1>O website base do <span>Talho Rodrigues</span> pronto para crescer consigo.</h1>
+          <h1>Carnes frescas<br><span>selecionadas</span> para a sua mesa.</h1>
           <p>
-            Presença digital profissional para apresentar os seus produtos, receber pedidos de encomenda
-            e facilitar o contacto com clientes em Vila Verde e arredores.
+            Produtos de qualidade, atendimento próximo e preços justos.
+            Faça o seu pedido online ou venha visitar-nos em Vila Verde, Braga.
           </p>
 
           <div class="hero-actions">
-            <a href="#encomenda" class="btn btn-primary">Fazer pedido</a>
+            <a href="#catalogo" class="btn btn-primary">Ver produtos</a>
             <a href="tel:253322600" class="btn btn-secondary">Ligar: 253 322 600</a>
           </div>
 
           <div class="hero-highlights">
             <div class="card mini-card">
-              <strong>Localização</strong>
+              <strong>📍 Localização</strong>
               <span>Vila Verde, Braga</span>
             </div>
             <div class="card mini-card">
-              <strong>Atendimento</strong>
-              <span>Próximo e personalizado</span>
+              <strong>🕐 Horário</strong>
+              <span>Seg–Sáb, 8h–19h</span>
             </div>
             <div class="card mini-card">
-              <strong>Futuro</strong>
-              <span>Base pronta para catálogo online</span>
+              <strong>🚚 Encomendas</strong>
+              <span>Levantamento na loja</span>
             </div>
           </div>
         </div>
 
         <div class="hero-panel card">
-          <div class="badge">Base profissional</div>
-          <h2>O que este site já inclui</h2>
-          <ul class="feature-list">
-            <li>Design moderno e responsivo</li>
-            <li>Secção de produtos por categoria</li>
-            <li>Formulário de encomenda</li>
-            <li>Informação de contacto rápida</li>
-            <li>Estrutura pronta para GitHub + Render</li>
-            <li>Código fácil de expandir</li>
-          </ul>
-
+          <div class="badge">Hoje em destaque</div>
+          <h2>Promoções da semana</h2>
+          <div class="promo-list">
+            <div class="promo-item">
+              <span>🥩 Entrecosto de Porco</span>
+              <strong class="promo-price">4,99 €/kg</strong>
+            </div>
+            <div class="promo-item">
+              <span>🐔 Frango do Campo</span>
+              <strong class="promo-price">3,49 €/kg</strong>
+            </div>
+            <div class="promo-item">
+              <span>🥩 Bife de Novilho</span>
+              <strong class="promo-price">11,90 €/kg</strong>
+            </div>
+            <div class="promo-item promo-item--sale">
+              <span>🥓 Chouriço da Casa</span>
+              <div>
+                <s class="old-price">7,50 €/kg</s>
+                <strong class="promo-price">5,99 €/kg</strong>
+              </div>
+            </div>
+          </div>
           <div class="info-box">
             <strong>Contacto principal</strong>
             <p>Telefone: <a href="tel:253322600">253 322 600</a></p>
@@ -90,53 +102,345 @@
     <section class="section strip">
       <div class="container strip-grid">
         <div>
-          <strong>Talho Rodrigues</strong>
-          <p>Negócio local com presença online clara, elegante e funcional.</p>
+          <strong>🏆 Qualidade garantida</strong>
+          <p>Carnes frescas selecionadas diariamente com origem controlada.</p>
         </div>
         <div>
-          <strong>Ideal para</strong>
-          <p>Mostrar cortes, promoções, encomendas e contactos num só lugar.</p>
+          <strong>👨‍🍳 Corte personalizado</strong>
+          <p>O talho corta ao seu gosto e prepara como prefere.</p>
         </div>
         <div>
-          <strong>Pronto para evoluir</strong>
-          <p>No futuro pode receber catálogo real, loja, login ou área de cliente.</p>
+          <strong>📦 Encomendas rápidas</strong>
+          <p>Faça o pedido online e levante na loja na hora que quiser.</p>
         </div>
       </div>
     </section>
 
-    <section class="section" id="produtos">
+    <!-- CATÁLOGO DE PRODUTOS -->
+    <section class="section" id="catalogo">
       <div class="container">
         <div class="section-heading">
-          <span class="eyebrow">Produtos</span>
-          <h2>Categorias em destaque</h2>
-          <p>Esta base já deixa o site preparado para apresentar os principais tipos de produtos vendidos no talho.</p>
+          <span class="eyebrow">Catálogo</span>
+          <h2>Os nossos produtos</h2>
+          <p>Consulte os preços e disponibilidade. Faça o seu pedido de encomenda no final da página.</p>
         </div>
 
-        <div class="cards-grid">
-          <article class="card product-card">
-            <h3>Carne de Vaca</h3>
-            <p>Espaço ideal para mostrar cortes, origem, sugestões de confeção e promoções.</p>
+        <!-- Filtros -->
+        <div class="catalog-filters">
+          <div class="filter-tags" id="categoryFilters">
+            <button class="filter-tag active" data-cat="todos">Todos</button>
+            <button class="filter-tag" data-cat="vaca">🐄 Vaca</button>
+            <button class="filter-tag" data-cat="porco">🐷 Porco</button>
+            <button class="filter-tag" data-cat="frango">🐔 Frango e Aves</button>
+            <button class="filter-tag" data-cat="preparados">🍖 Preparados</button>
+            <button class="filter-tag" data-cat="enchidos">🥩 Enchidos</button>
+            <button class="filter-tag" data-cat="promocao">🏷️ Promoções</button>
+          </div>
+
+          <div class="filter-options">
+            <label class="filter-check">
+              <input type="checkbox" id="filterPromo" /> Só promoções
+            </label>
+            <div class="filter-sort">
+              <select id="sortSelect">
+                <option value="default">Ordenar por</option>
+                <option value="preco-asc">Preço: menor primeiro</option>
+                <option value="preco-desc">Preço: maior primeiro</option>
+                <option value="nome">Nome A–Z</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid de produtos -->
+        <div class="products-grid" id="productsGrid">
+          <!-- Vaca -->
+          <article class="product-card card" data-cat="vaca" data-price="11.90" data-name="Bife de Novilho">
+            <div class="product-img">🥩</div>
+            <div class="product-body">
+              <span class="product-cat">Vaca</span>
+              <h3>Bife de Novilho</h3>
+              <p>Corte tenro e suculento, ideal para grelhar ou frigideira.</p>
+              <div class="product-footer">
+                <span class="product-price">11,90 €<small>/kg</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
           </article>
-          <article class="card product-card">
-            <h3>Carne de Porco</h3>
-            <p>Apresentação clara de peças frescas, preparados e produtos para o dia a dia.</p>
+
+          <article class="product-card card" data-cat="vaca" data-price="7.90" data-name="Carne para Estufar">
+            <div class="product-img">🍖</div>
+            <div class="product-body">
+              <span class="product-cat">Vaca</span>
+              <h3>Carne para Estufar</h3>
+              <p>Peças selecionadas para guisados e estufados saborosos.</p>
+              <div class="product-footer">
+                <span class="product-price">7,90 €<small>/kg</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
           </article>
-          <article class="card product-card">
-            <h3>Frango e Aves</h3>
-            <p>Zona dedicada a frango, peru e outros produtos com destaque para frescura.</p>
+
+          <article class="product-card card" data-cat="vaca" data-price="14.50" data-name="Lombo de Novilho">
+            <div class="product-img">🥩</div>
+            <div class="product-body">
+              <span class="product-cat">Vaca</span>
+              <h3>Lombo de Novilho</h3>
+              <p>Corte nobre, perfeito para ocasiões especiais e assados.</p>
+              <div class="product-footer">
+                <span class="product-price">14,50 €<small>/kg</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
           </article>
-          <article class="card product-card">
-            <h3>Preparados</h3>
-            <p>Hambúrgueres, espetadas, panados, marinados e outros preparados da casa.</p>
+
+          <article class="product-card card" data-cat="vaca" data-price="6.20" data-name="Carne Picada de Vaca">
+            <div class="product-img">🫙</div>
+            <div class="product-body">
+              <span class="product-cat">Vaca</span>
+              <h3>Carne Picada de Vaca</h3>
+              <p>Fresca e preparada na hora para bolonhesa, hambúrgueres e mais.</p>
+              <div class="product-footer">
+                <span class="product-price">6,20 €<small>/kg</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
           </article>
-          <article class="card product-card">
-            <h3>Enchidos</h3>
-            <p>Área perfeita para exibir enchidos tradicionais e especialidades locais.</p>
+
+          <!-- Porco -->
+          <article class="product-card card" data-cat="porco" data-price="4.99" data-name="Entrecosto de Porco" data-promo="true">
+            <div class="promo-badge">🏷️ Promoção</div>
+            <div class="product-img">🥩</div>
+            <div class="product-body">
+              <span class="product-cat">Porco</span>
+              <h3>Entrecosto de Porco</h3>
+              <p>Ideal para grelhar ou assar. Peça favorita dos clientes.</p>
+              <div class="product-footer">
+                <div>
+                  <s class="old-price-card">6,50 €/kg</s>
+                  <span class="product-price product-price--sale">4,99 €<small>/kg</small></span>
+                </div>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
           </article>
-          <article class="card product-card">
-            <h3>Promoções</h3>
-            <p>Bloco pronto para campanhas semanais, packs familiares e ofertas especiais.</p>
+
+          <article class="product-card card" data-cat="porco" data-price="5.50" data-name="Costeleta de Porco">
+            <div class="product-img">🍖</div>
+            <div class="product-body">
+              <span class="product-cat">Porco</span>
+              <h3>Costeleta de Porco</h3>
+              <p>Peça clássica, corte ao gosto do cliente.</p>
+              <div class="product-footer">
+                <span class="product-price">5,50 €<small>/kg</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
           </article>
+
+          <article class="product-card card" data-cat="porco" data-price="6.90" data-name="Lombinho de Porco">
+            <div class="product-img">🥩</div>
+            <div class="product-body">
+              <span class="product-cat">Porco</span>
+              <h3>Lombinho de Porco</h3>
+              <p>Corte magro e tenro, perfeito para grelhar ou saltear.</p>
+              <div class="product-footer">
+                <span class="product-price">6,90 €<small>/kg</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card card" data-cat="porco" data-price="3.80" data-name="Pá de Porco">
+            <div class="product-img">🍖</div>
+            <div class="product-body">
+              <span class="product-cat">Porco</span>
+              <h3>Pá de Porco</h3>
+              <p>Ótima para assados no forno e caldeiradas.</p>
+              <div class="product-footer">
+                <span class="product-price">3,80 €<small>/kg</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Frango -->
+          <article class="product-card card" data-cat="frango" data-price="3.49" data-name="Frango do Campo" data-promo="true">
+            <div class="promo-badge">🏷️ Promoção</div>
+            <div class="product-img">🐔</div>
+            <div class="product-body">
+              <span class="product-cat">Frango e Aves</span>
+              <h3>Frango do Campo</h3>
+              <p>Frango inteiro criado ao ar livre. Sabor intenso e genuíno.</p>
+              <div class="product-footer">
+                <div>
+                  <s class="old-price-card">4,20 €/kg</s>
+                  <span class="product-price product-price--sale">3,49 €<small>/kg</small></span>
+                </div>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card card" data-cat="frango" data-price="5.90" data-name="Peito de Frango">
+            <div class="product-img">🐔</div>
+            <div class="product-body">
+              <span class="product-cat">Frango e Aves</span>
+              <h3>Peito de Frango</h3>
+              <p>Filetes limpos e fatiados ao gosto do cliente.</p>
+              <div class="product-footer">
+                <span class="product-price">5,90 €<small>/kg</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card card" data-cat="frango" data-price="4.50" data-name="Coxa e Sobrecoxa">
+            <div class="product-img">🍗</div>
+            <div class="product-body">
+              <span class="product-cat">Frango e Aves</span>
+              <h3>Coxa e Sobrecoxa</h3>
+              <p>Ideal para assados, guisados ou na brasa.</p>
+              <div class="product-footer">
+                <span class="product-price">4,50 €<small>/kg</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card card" data-cat="frango" data-price="6.80" data-name="Peru — Peito Fatiado">
+            <div class="product-img">🦃</div>
+            <div class="product-body">
+              <span class="product-cat">Frango e Aves</span>
+              <h3>Peru — Peito Fatiado</h3>
+              <p>Carne magra e saborosa para refeições ligeiras.</p>
+              <div class="product-footer">
+                <span class="product-price">6,80 €<small>/kg</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Preparados -->
+          <article class="product-card card" data-cat="preparados" data-price="7.50" data-name="Hambúrgueres Artesanais">
+            <div class="product-img">🍔</div>
+            <div class="product-body">
+              <span class="product-cat">Preparados</span>
+              <h3>Hambúrgueres Artesanais</h3>
+              <p>Feitos na hora com carne fresca. Pack de 4 unidades (±600g).</p>
+              <div class="product-footer">
+                <span class="product-price">7,50 €<small>/pack</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card card" data-cat="preparados" data-price="8.90" data-name="Espetadas Mistas">
+            <div class="product-img">🍢</div>
+            <div class="product-body">
+              <span class="product-cat">Preparados</span>
+              <h3>Espetadas Mistas</h3>
+              <p>Porco e frango marinados. Pack de 4 espetadas prontas para grelhar.</p>
+              <div class="product-footer">
+                <span class="product-price">8,90 €<small>/pack</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card card" data-cat="preparados" data-price="6.80" data-name="Costeletas Marinadas">
+            <div class="product-img">🥩</div>
+            <div class="product-body">
+              <span class="product-cat">Preparados</span>
+              <h3>Costeletas Marinadas</h3>
+              <p>Marinada da casa com ervas e especiarias. Prontas a grelhar.</p>
+              <div class="product-footer">
+                <span class="product-price">6,80 €<small>/kg</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card card" data-cat="preparados" data-price="9.50" data-name="Pack Família — Churrasco">
+            <div class="product-img">🔥</div>
+            <div class="product-body">
+              <span class="product-cat">Preparados</span>
+              <h3>Pack Família — Churrasco</h3>
+              <p>Combinação de costeletas, espetadas e asas de frango para 4–6 pessoas.</p>
+              <div class="product-footer">
+                <span class="product-price">9,50 €<small>/kg</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Enchidos -->
+          <article class="product-card card" data-cat="enchidos" data-price="5.99" data-name="Chouriço da Casa" data-promo="true">
+            <div class="promo-badge">🏷️ Promoção</div>
+            <div class="product-img">🌭</div>
+            <div class="product-body">
+              <span class="product-cat">Enchidos</span>
+              <h3>Chouriço da Casa</h3>
+              <p>Receita tradicional, fumado lentamente. Especialidade da casa.</p>
+              <div class="product-footer">
+                <div>
+                  <s class="old-price-card">7,50 €/kg</s>
+                  <span class="product-price product-price--sale">5,99 €<small>/kg</small></span>
+                </div>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card card" data-cat="enchidos" data-price="6.50" data-name="Linguiça Caseira">
+            <div class="product-img">🌭</div>
+            <div class="product-body">
+              <span class="product-cat">Enchidos</span>
+              <h3>Linguiça Caseira</h3>
+              <p>Preparada artesanalmente com temperos tradicionais do Minho.</p>
+              <div class="product-footer">
+                <span class="product-price">6,50 €<small>/kg</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card card" data-cat="enchidos" data-price="8.20" data-name="Morcela de Arroz">
+            <div class="product-img">🫙</div>
+            <div class="product-body">
+              <span class="product-cat">Enchidos</span>
+              <h3>Morcela de Arroz</h3>
+              <p>Especialidade regional, perfeita para cozido ou grelhada.</p>
+              <div class="product-footer">
+                <span class="product-price">8,20 €<small>/kg</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card card" data-cat="enchidos" data-price="9.80" data-name="Presunto da Serra">
+            <div class="product-img">🍖</div>
+            <div class="product-body">
+              <span class="product-cat">Enchidos</span>
+              <h3>Presunto da Serra</h3>
+              <p>Curado naturalmente, com sabor intenso e textura única.</p>
+              <div class="product-footer">
+                <span class="product-price">9,80 €<small>/kg</small></span>
+                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Estado vazio -->
+        <div class="empty-state" id="emptyState" style="display:none;">
+          <p>😕 Nenhum produto encontrado com esses filtros.</p>
+          <button class="btn btn-secondary" onclick="resetFilters()">Limpar filtros</button>
+        </div>
+
+        <div class="catalog-cta">
+          <p>Não encontrou o que procura? <strong>Fale connosco</strong> — temos muito mais disponível na loja.</p>
+          <a href="tel:253322600" class="btn btn-secondary">📞 Ligar agora</a>
         </div>
       </div>
     </section>
@@ -145,21 +449,24 @@
       <div class="container">
         <div class="section-heading">
           <span class="eyebrow">Serviços</span>
-          <h2>Uma base útil para clientes reais</h2>
+          <h2>Como funciona a encomenda</h2>
         </div>
 
         <div class="service-layout">
           <div class="card">
-            <h3>Pedidos rápidos</h3>
-            <p>Os clientes podem preencher o formulário e enviar um pedido de encomenda com nome, contacto e observações.</p>
+            <div class="service-step">1</div>
+            <h3>Escolha os produtos</h3>
+            <p>Navegue pelo catálogo, consulte os preços e decida o que pretende encomendar.</p>
           </div>
           <div class="card">
-            <h3>Contacto imediato</h3>
-            <p>Botões prontos para ligar e facilitar a comunicação sem complicações.</p>
+            <div class="service-step">2</div>
+            <h3>Envie o pedido</h3>
+            <p>Preencha o formulário com o nome, contacto e produtos desejados. Recebemos de imediato.</p>
           </div>
           <div class="card">
-            <h3>Expansão futura</h3>
-            <p>Fácil de converter num site com catálogo real, integração WhatsApp, mapa, preços ou loja online.</p>
+            <div class="service-step">3</div>
+            <h3>Levante na loja</h3>
+            <p>Confirmamos o pedido por telefone e a encomenda fica pronta para levantamento na hora combinada.</p>
           </div>
         </div>
       </div>
@@ -168,25 +475,26 @@
     <section class="section" id="sobre">
       <div class="container about-grid">
         <div>
-          <span class="eyebrow">Sobre o negócio</span>
-          <h2>Imagem profissional para um negócio de confiança</h2>
+          <span class="eyebrow">Sobre nós</span>
+          <h2>Um talho de confiança em Vila Verde</h2>
           <p>
-            O Talho Rodrigues pode usar este site como presença digital principal para reforçar confiança,
-            apresentar produtos e simplificar o contacto com clientes em Vila Verde, Braga.
+            O Talho Rodrigues serve a comunidade de Vila Verde com carnes frescas e de qualidade,
+            selecionadas com cuidado e preparadas ao gosto de cada cliente.
           </p>
           <p>
-            A estrutura foi feita para ser limpa, moderna e simples de atualizar, sem bloquear futuras melhorias.
+            Do corte tradicional ao preparado especial, garantimos o melhor produto
+            com o atendimento próximo que nos distingue.
           </p>
         </div>
         <div class="card highlight-card">
-          <h3>Próximos upgrades possíveis</h3>
+          <h3>Porque escolher o Talho Rodrigues?</h3>
           <ul class="feature-list">
-            <li>Página separada para cada categoria</li>
-            <li>Galeria real de produtos</li>
-            <li>Integração com Google Maps</li>
-            <li>Botão de WhatsApp</li>
-            <li>Horário dinâmico</li>
-            <li>Loja online com carrinho</li>
+            <li>✅ Carne fresca todos os dias</li>
+            <li>✅ Origem controlada e rastreável</li>
+            <li>✅ Corte personalizado ao pedido</li>
+            <li>✅ Preparados artesanais da casa</li>
+            <li>✅ Enchidos e especialidades regionais</li>
+            <li>✅ Atendimento próximo e de confiança</li>
           </ul>
         </div>
       </div>
@@ -196,35 +504,43 @@
       <div class="container order-grid">
         <div>
           <span class="eyebrow">Encomendas</span>
-          <h2>Pedido de encomenda</h2>
+          <h2>Faça o seu pedido</h2>
           <p>
-            Este formulário é uma base inicial. Para já, simula o envio no browser.
-            Mais tarde pode ser ligado a email, base de dados ou WhatsApp.
+            Preencha o formulário com os produtos que deseja e entraremos em contacto para confirmar
+            a disponibilidade e hora de levantamento.
           </p>
+          <div class="order-info">
+            <p>📞 Ou ligue diretamente: <a href="tel:253322600"><strong>253 322 600</strong></a></p>
+          </div>
         </div>
 
         <form class="card order-form" id="orderForm">
           <div class="form-row">
-            <label for="nome">Nome</label>
+            <label for="nome">Nome *</label>
             <input id="nome" name="nome" type="text" placeholder="O seu nome" required />
           </div>
 
           <div class="form-row">
-            <label for="telefone">Telefone</label>
-            <input id="telefone" name="telefone" type="tel" placeholder="Ex: 912345678" required />
+            <label for="telefone">Telefone *</label>
+            <input id="telefone" name="telefone" type="tel" placeholder="Ex: 912 345 678" required />
           </div>
 
           <div class="form-row">
-            <label for="produto">Produto / pedido</label>
-            <input id="produto" name="produto" type="text" placeholder="Ex: 2kg costeletas, 1 frango..." required />
+            <label for="produto">Produto / pedido *</label>
+            <input id="produto" name="produto" type="text" placeholder="Ex: 2kg costeletas de porco, 1 frango inteiro..." required />
+          </div>
+
+          <div class="form-row">
+            <label for="data">Data de levantamento</label>
+            <input id="data" name="data" type="date" />
           </div>
 
           <div class="form-row">
             <label for="mensagem">Observações</label>
-            <textarea id="mensagem" name="mensagem" rows="5" placeholder="Detalhes do corte, quantidade, hora de recolha, etc."></textarea>
+            <textarea id="mensagem" name="mensagem" rows="4" placeholder="Detalhes do corte, quantidade, hora de recolha, etc."></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-full">Enviar pedido</button>
+          <button type="submit" class="btn btn-primary btn-full">✉️ Enviar pedido</button>
           <p class="form-note" id="formMessage"></p>
         </form>
       </div>
@@ -239,16 +555,19 @@
 
         <div class="contact-grid">
           <div class="card">
-            <h3>Telefone</h3>
+            <h3>📞 Telefone</h3>
             <p><a href="tel:253322600">253 322 600</a></p>
+            <p class="muted-text">Disponível durante o horário de funcionamento</p>
           </div>
           <div class="card">
-            <h3>Localização</h3>
+            <h3>📍 Localização</h3>
             <p>Vila Verde, Braga</p>
+            <p class="muted-text">Venha visitar-nos na nossa loja</p>
           </div>
           <div class="card">
-            <h3>Observação</h3>
-            <p>Adicione depois a morada completa, horário e mapa para tornar o site ainda mais útil.</p>
+            <h3>🕐 Horário</h3>
+            <p>Segunda a Sábado</p>
+            <p class="muted-text">08h00 – 19h00</p>
           </div>
         </div>
       </div>
@@ -262,11 +581,15 @@
         <p>Vila Verde, Braga</p>
       </div>
       <div>
-        <p>Telefone: <a href="tel:253322600">253 322 600</a></p>
+        <p>📞 <a href="tel:253322600">253 322 600</a></p>
+        <p>🕐 Seg–Sáb: 08h–19h</p>
       </div>
       <div>
-        <p>Base criada para ser melhorada no futuro com GitHub + Render.</p>
+        <p>Carnes frescas e de qualidade para a sua família.</p>
       </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>© 2025 Talho Rodrigues. Todos os direitos reservados.</p>
     </div>
   </footer>
 
