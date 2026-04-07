@@ -397,11 +397,20 @@
     }
 
     .product-img {
-      font-size: 3.2rem; text-align: center;
-      padding: 32px 20px 20px;
+      height: 220px;
+      padding: 0;
       background: var(--cream);
       line-height: 1; position: relative;
+      overflow: hidden;
     }
+    .product-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.35s ease;
+    }
+    .product-card:hover .product-img img { transform: scale(1.05); }
 
     .product-body { padding: 18px 20px 22px; display: flex; flex-direction: column; flex: 1; gap: 6px; }
 
@@ -810,12 +819,12 @@
         <div class="catalog-bar">
           <div class="filter-tags" id="categoryFilters">
             <button class="filter-tag active" data-cat="todos">Todos</button>
-            <button class="filter-tag" data-cat="vaca">🐄 Vaca</button>
-            <button class="filter-tag" data-cat="porco">🐷 Porco</button>
-            <button class="filter-tag" data-cat="frango">🐔 Aves</button>
-            <button class="filter-tag" data-cat="preparados">🍖 Preparados</button>
-            <button class="filter-tag" data-cat="enchidos">🌭 Enchidos</button>
-            <button class="filter-tag" data-cat="promocao">🏷️ Promoções</button>
+            <button class="filter-tag" data-cat="vaca">Vaca</button>
+            <button class="filter-tag" data-cat="porco">Porco</button>
+            <button class="filter-tag" data-cat="frango">Aves</button>
+            <button class="filter-tag" data-cat="preparados">Preparados</button>
+            <button class="filter-tag" data-cat="enchidos">Enchidos</button>
+            <button class="filter-tag" data-cat="promocao">Promoções</button>
           </div>
           <div class="filter-controls">
             <label class="filter-check">
@@ -835,7 +844,7 @@
         <div class="products-grid" id="productsGrid">
           <!-- Vaca -->
           <article class="product-card" data-cat="vaca" data-price="11.90" data-name="Bife de Novilho">
-            <div class="product-img">🥩</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?raw,beef,steak" alt="Bife de Novilho" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Vaca</span>
               <h3>Bife de Novilho</h3>
@@ -849,7 +858,7 @@
           </article>
 
           <article class="product-card" data-cat="vaca" data-price="7.90" data-name="Carne para Estufar">
-            <div class="product-img">🍖</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?raw,beef,stew" alt="Carne para Estufar" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Vaca</span>
               <h3>Carne para Estufar</h3>
@@ -863,7 +872,7 @@
           </article>
 
           <article class="product-card" data-cat="vaca" data-price="14.50" data-name="Lombo de Novilho">
-            <div class="product-img">🥩</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?beef,tenderloin,raw" alt="Lombo de Novilho" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Vaca</span>
               <h3>Lombo de Novilho</h3>
@@ -877,7 +886,7 @@
           </article>
 
           <article class="product-card" data-cat="vaca" data-price="6.20" data-name="Carne Picada de Vaca">
-            <div class="product-img">🫙</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?ground,beef,raw" alt="Carne Picada de Vaca" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Vaca</span>
               <h3>Carne Picada de Vaca</h3>
@@ -893,7 +902,7 @@
           <!-- Porco -->
           <article class="product-card" data-cat="porco" data-price="4.99" data-name="Entrecosto de Porco" data-promo="true">
             <div class="promo-badge">Promoção</div>
-            <div class="product-img">🥩</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?raw,pork,ribs" alt="Entrecosto de Porco" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Porco</span>
               <h3>Entrecosto de Porco</h3>
@@ -910,7 +919,7 @@
           </article>
 
           <article class="product-card" data-cat="porco" data-price="5.50" data-name="Costeleta de Porco">
-            <div class="product-img">🍖</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?raw,pork,chop" alt="Costeleta de Porco" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Porco</span>
               <h3>Costeleta de Porco</h3>
@@ -924,7 +933,7 @@
           </article>
 
           <article class="product-card" data-cat="porco" data-price="6.90" data-name="Lombinho de Porco">
-            <div class="product-img">🥩</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?raw,pork,tenderloin" alt="Lombinho de Porco" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Porco</span>
               <h3>Lombinho de Porco</h3>
@@ -938,7 +947,7 @@
           </article>
 
           <article class="product-card" data-cat="porco" data-price="3.80" data-name="Pá de Porco">
-            <div class="product-img">🍖</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?raw,pork,shoulder" alt="Pá de Porco" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Porco</span>
               <h3>Pá de Porco</h3>
@@ -954,7 +963,7 @@
           <!-- Frango -->
           <article class="product-card" data-cat="frango" data-price="3.49" data-name="Frango do Campo" data-promo="true">
             <div class="promo-badge">Promoção</div>
-            <div class="product-img">🐔</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?whole,chicken,raw" alt="Frango do Campo" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Frango e Aves</span>
               <h3>Frango do Campo</h3>
@@ -971,7 +980,7 @@
           </article>
 
           <article class="product-card" data-cat="frango" data-price="5.90" data-name="Peito de Frango">
-            <div class="product-img">🐔</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?raw,chicken,breast" alt="Peito de Frango" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Frango e Aves</span>
               <h3>Peito de Frango</h3>
@@ -985,7 +994,7 @@
           </article>
 
           <article class="product-card" data-cat="frango" data-price="4.50" data-name="Coxa e Sobrecoxa">
-            <div class="product-img">🍗</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?raw,chicken,thigh" alt="Coxa e Sobrecoxa" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Frango e Aves</span>
               <h3>Coxa e Sobrecoxa</h3>
@@ -999,7 +1008,7 @@
           </article>
 
           <article class="product-card" data-cat="frango" data-price="6.80" data-name="Peru — Peito Fatiado">
-            <div class="product-img">🦃</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?raw,turkey,breast" alt="Peru — Peito Fatiado" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Frango e Aves</span>
               <h3>Peru — Peito Fatiado</h3>
@@ -1014,7 +1023,7 @@
 
           <!-- Preparados -->
           <article class="product-card" data-cat="preparados" data-price="7.50" data-name="Hambúrgueres Artesanais">
-            <div class="product-img">🍔</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?raw,burger,patties" alt="Hambúrgueres Artesanais" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Preparados</span>
               <h3>Hambúrgueres Artesanais</h3>
@@ -1028,7 +1037,7 @@
           </article>
 
           <article class="product-card" data-cat="preparados" data-price="8.90" data-name="Espetadas Mistas">
-            <div class="product-img">🍢</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?raw,meat,skewers" alt="Espetadas Mistas" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Preparados</span>
               <h3>Espetadas Mistas</h3>
@@ -1042,7 +1051,7 @@
           </article>
 
           <article class="product-card" data-cat="preparados" data-price="6.80" data-name="Costeletas Marinadas">
-            <div class="product-img">🥩</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?marinated,pork,chops" alt="Costeletas Marinadas" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Preparados</span>
               <h3>Costeletas Marinadas</h3>
@@ -1056,7 +1065,7 @@
           </article>
 
           <article class="product-card" data-cat="preparados" data-price="9.50" data-name="Pack Família — Churrasco">
-            <div class="product-img">🔥</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?barbecue,meat,platter" alt="Pack Família — Churrasco" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Preparados</span>
               <h3>Pack Família — Churrasco</h3>
@@ -1072,7 +1081,7 @@
           <!-- Enchidos -->
           <article class="product-card" data-cat="enchidos" data-price="5.99" data-name="Chouriço da Casa" data-promo="true">
             <div class="promo-badge">Promoção</div>
-            <div class="product-img">🌭</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?chorizo,sausage" alt="Chouriço da Casa" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Enchidos</span>
               <h3>Chouriço da Casa</h3>
@@ -1089,7 +1098,7 @@
           </article>
 
           <article class="product-card" data-cat="enchidos" data-price="6.50" data-name="Linguiça Caseira">
-            <div class="product-img">🌭</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?sausage,raw" alt="Linguiça Caseira" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Enchidos</span>
               <h3>Linguiça Caseira</h3>
@@ -1103,7 +1112,7 @@
           </article>
 
           <article class="product-card" data-cat="enchidos" data-price="8.20" data-name="Morcela de Arroz">
-            <div class="product-img">🫙</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?blood,sausage" alt="Morcela de Arroz" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Enchidos</span>
               <h3>Morcela de Arroz</h3>
@@ -1117,7 +1126,7 @@
           </article>
 
           <article class="product-card" data-cat="enchidos" data-price="9.80" data-name="Presunto da Serra">
-            <div class="product-img">🍖</div>
+            <div class="product-img"><img src="https://source.unsplash.com/featured/800x600/?cured,ham" alt="Presunto da Serra" loading="lazy"></div>
             <div class="product-body">
               <span class="product-cat">Enchidos</span>
               <h3>Presunto da Serra</h3>
@@ -1272,7 +1281,8 @@
           <div class="contact-card">
             <div class="contact-card-icon">📍</div>
             <h3>Localização</h3>
-            <p>Vila Verde, Braga</p>
+            <p>R. do Prof. 77</p>
+            <p class="sub">4730-072 Vila Verde</p>
             <p class="sub">Venha visitar-nos na nossa loja</p>
           </div>
           <div class="contact-card">
@@ -1313,7 +1323,7 @@
         <div class="footer-col">
           <h4>Contacto</h4>
           <p>📞 <a href="tel:253322600">253 322 600</a></p>
-          <p>📍 Vila Verde, Braga</p>
+          <p>📍 R. do Prof. 77, 4730-072 Vila Verde</p>
           <p>🕐 Seg–Sáb: 08h–19h</p>
         </div>
       </div>
