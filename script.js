@@ -6,7 +6,8 @@ if (menuToggle && navLinks) {
   menuToggle.addEventListener('click', () => {
     navLinks.classList.toggle('open');
   });
-  navLinks.querySelectorAll('a').forEach(link => {
+
+  navLinks.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', () => navLinks.classList.remove('open'));
   });
 }
@@ -19,9 +20,9 @@ if (orderForm) {
   orderForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    const nome = document.getElementById('nome').value.trim();
-    const telefone = document.getElementById('telefone').value.trim();
-    const produto = document.getElementById('produto').value.trim();
+    const nome = document.getElementById('nome')?.value.trim() || '';
+    const telefone = document.getElementById('telefone')?.value.trim() || '';
+    const produto = document.getElementById('produto')?.value.trim() || '';
 
     if (!nome || !telefone || !produto) {
       formMessage.textContent = '⚠️ Por favor preencha os campos obrigatórios antes de enviar.';
@@ -29,12 +30,16 @@ if (orderForm) {
       return;
     }
 
-    formMessage.innerHTML = '✅ <strong>Pedido recebido!</strong> Entraremos em contacto em breve para confirmar a sua encomenda.';
+    formMessage.innerHTML =
+      '✅ <strong>Pedido recebido!</strong> Entraremos em contacto em breve para confirmar a sua encomenda.';
     formMessage.style.color = '#1f6b1f';
+
     orderForm.reset();
 
-    // Scroll suave para a mensagem
-    formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    formMessage.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest'
+    });
   });
 }
 
@@ -53,102 +58,122 @@ function getProducts() {
 
 function applyFilters() {
   const products = getProducts();
-  const onlyPromo = filterPromo && filterPromo.checked;
+  const onlyPromo = filterPromo ? filterPromo.checked : false;
   const sortValue = sortSelect ? sortSelect.value : 'default';
 
-  // Filtrar
-  let visible = products.filter(p => {
-    const cat = p.dataset.cat || '';
-    const isPromo = p.dataset.promo === 'true';
+  let visible = products.filter((product) => {
+    const cat = product.dataset.cat || '';
+    const isPromo = product.dataset.promo === 'true';
 
-    const matchesCat = activeCategory === 'todos' || cat === activeCategory;
+    const matchesCategory = activeCategory === 'todos' || cat === activeCategory;
     const matchesPromo = !onlyPromo || isPromo;
 
-    return matchesCat && matchesPromo;
+    return matchesCategory && matchesPromo;
   });
 
-  // Esconder todos
-  products.forEach(p => {
-    p.style.display = 'none';
-    p.classList.remove('fade-in');
+  products.forEach((product) => {
+    product.style.display = 'none';
+    product.classList.remove('fade-in');
   });
 
-  // Ordenar
   if (sortValue === 'preco-asc') {
-    visible.sort((a, b) => parseFloat(a.dataset.price) - parseFloat(b.dataset.price));
+    visible.sort((a, b) => parseFloat(a.dataset.price || 0) - parseFloat(b.dataset.price || 0));
   } else if (sortValue === 'preco-desc') {
-    visible.sort((a, b) => parseFloat(b.dataset.price) - parseFloat(a.dataset.price));
+    visible.sort((a, b) => parseFloat(b.dataset.price || 0) - parseFloat(a.dataset.price || 0));
   } else if (sortValue === 'nome') {
-    visible.sort((a, b) => (a.dataset.name || '').localeCompare(b.dataset.name || '', 'pt'));
+    visible.sort((a, b) =>
+      (a.dataset.name || '').localeCompare((b.dataset.name || ''), 'pt')
+    );
   }
 
-  // Mostrar e reordenar no DOM
   if (visible.length === 0) {
-    emptyState && (emptyState.style.display = 'block');
+    if (emptyState) emptyState.style.display = 'block';
   } else {
-    emptyState && (emptyState.style.display = 'none');
-    visible.forEach((p, i) => {
-      p.style.display = '';
-      // Reordenar no grid
-      productsGrid.appendChild(p);
-      // Animação escalonada
-      setTimeout(() => p.classList.add('fade-in'), i * 40);
+    if (emptyState) emptyState.style.display = 'none';
+
+    visible.forEach((product, index) => {
+      product.style.display = '';
+      if (productsGrid) productsGrid.appendChild(product);
+
+      setTimeout(() => {
+        product.classList.add('fade-in');
+      }, index * 40);
     });
   }
 }
 
 // Botões de categoria
 if (categoryFilters) {
-  categoryFilters.querySelectorAll('.filter-tag').forEach(btn => {
-    btn.addEventListener('click', () => {
-      categoryFilters.querySelectorAll('.filter-tag').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeCategory = btn.dataset.cat;
+  categoryFilters.querySelectorAll('.filter-tag').forEach((button) => {
+    button.addEventListener('click', () => {
+      categoryFilters.querySelectorAll('.filter-tag').forEach((btn) => {
+        btn.classList.remove('active');
+      });
+
+      button.classList.add('active');
+      activeCategory = button.dataset.cat || 'todos';
       applyFilters();
     });
   });
 }
 
-if (filterPromo) filterPromo.addEventListener('change', applyFilters);
-if (sortSelect) sortSelect.addEventListener('change', applyFilters);
+if (filterPromo) {
+  filterPromo.addEventListener('change', applyFilters);
+}
+
+if (sortSelect) {
+  sortSelect.addEventListener('change', applyFilters);
+}
 
 // Inicializar com animação
 window.addEventListener('DOMContentLoaded', () => {
-  getProducts().forEach((p, i) => {
-    setTimeout(() => p.classList.add('fade-in'), i * 50);
+  getProducts().forEach((product, index) => {
+    setTimeout(() => {
+      product.classList.add('fade-in');
+    }, index * 50);
   });
 });
 
-// Função global para reset (usada no botão do empty state)
+// Função global para reset
 function resetFilters() {
   activeCategory = 'todos';
+
   if (filterPromo) filterPromo.checked = false;
   if (sortSelect) sortSelect.value = 'default';
+
   if (categoryFilters) {
-    categoryFilters.querySelectorAll('.filter-tag').forEach(b => b.classList.remove('active'));
-    const todoBtn = categoryFilters.querySelector('[data-cat="todos"]');
-    if (todoBtn) todoBtn.classList.add('active');
+    categoryFilters.querySelectorAll('.filter-tag').forEach((btn) => {
+      btn.classList.remove('active');
+    });
+
+    const allButton = categoryFilters.querySelector('[data-cat="todos"]');
+    if (allButton) allButton.classList.add('active');
   }
+
   applyFilters();
 }
 
-// ─── Botões "Encomendar" no catálogo → preenche campo produto ──
-document.addEventListener('click', (e) => {
-  const btn = e.target.closest('a[href="#encomenda"]');
-  if (!btn) return;
+// Deixar disponível globalmente caso o botão use onclick="resetFilters()"
+window.resetFilters = resetFilters;
 
-  // Encontrar o nome do produto no card pai
-  const card = btn.closest('.product-card');
+// ─── Botões "Encomendar" no catálogo ──────────────────────────
+document.addEventListener('click', (event) => {
+  const button = event.target.closest('a[href="#encomenda"]');
+  if (!button) return;
+
+  const card = button.closest('.product-card');
   if (!card) return;
+
   const productName = card.dataset.name || '';
 
-  // Aguardar scroll e preencher o campo produto
   setTimeout(() => {
     const produtoInput = document.getElementById('produto');
+
     if (produtoInput && productName) {
       if (!produtoInput.value) {
         produtoInput.value = productName;
       }
+
       produtoInput.focus();
     }
   }, 500);
