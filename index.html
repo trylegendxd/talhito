@@ -5,21 +5,695 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Talho Rodrigues | Vila Verde, Braga</title>
   <meta name="description" content="Talho Rodrigues em Vila Verde, Braga. Carnes selecionadas, atendimento de confiança e encomendas rápidas." />
-  <meta name="theme-color" content="#7a1010" />
+  <meta name="theme-color" content="#8B1A1A" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #FAF5EE;
+      --cream-2: #F2E9DC;
+      --parchment: #E8D9C4;
+      --red: #8B1A1A;
+      --red-deep: #5C0F0F;
+      --red-light: rgba(139,26,26,0.08);
+      --gold: #C8923A;
+      --gold-light: #E8B86D;
+      --charcoal: #1C1410;
+      --brown: #4A2C1A;
+      --muted: #7A6558;
+      --border: rgba(139,26,26,0.15);
+      --shadow: 0 20px 60px rgba(28,20,16,0.1);
+      --shadow-sm: 0 4px 20px rgba(28,20,16,0.07);
+      --radius: 4px;
+      --max-w: 1200px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      color: var(--charcoal);
+      background: var(--cream);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise texture overlay ─────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    a { color: var(--red); text-decoration: none; }
+    img { max-width: 100%; }
+
+    .container {
+      width: min(calc(100% - 40px), var(--max-w));
+      margin: 0 auto;
+    }
+
+    /* ── Decorative rule ───────────── */
+    .rule {
+      display: flex; align-items: center; gap: 16px;
+      color: var(--gold); font-size: 0.75rem; letter-spacing: 0.15em;
+      text-transform: uppercase; font-weight: 700;
+    }
+    .rule::before, .rule::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+    }
+
+    /* ── Eyebrow ───────────────────── */
+    .eyebrow {
+      display: inline-block; font-family: 'Lato', sans-serif;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    /* ══════════════════════════════════
+       HEADER
+    ══════════════════════════════════ */
+    .site-header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250,245,238,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      min-height: 80px; gap: 20px;
+    }
+
+    .logo { display: flex; align-items: center; gap: 16px; color: var(--charcoal); }
+
+    .logo-mark {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--red-deep), var(--red));
+      display: grid; place-items: center;
+      color: white; font-family: 'Playfair Display', serif;
+      font-size: 1.25rem; font-weight: 900;
+      border: 2px solid var(--gold);
+      position: relative;
+    }
+    .logo-mark::after {
+      content: '';
+      position: absolute; inset: 3px;
+      border: 1px solid rgba(200,146,58,0.4);
+    }
+
+    .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+    .logo-text strong { font-family: 'Playfair Display', serif; font-size: 1.1rem; letter-spacing: 0.02em; }
+    .logo-text small { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a {
+      color: var(--charcoal); font-weight: 700; font-size: 0.82rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      position: relative; transition: color 0.2s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
+      height: 1px; background: var(--gold); transform: scaleX(0); transition: transform 0.25s;
+    }
+    .nav-links a:hover { color: var(--red); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .menu-toggle {
+      display: none; border: 1px solid var(--border);
+      background: white; width: 44px; height: 44px;
+      cursor: pointer; font-size: 18px;
+      transition: background 0.2s;
+    }
+    .menu-toggle:hover { background: var(--cream-2); }
+
+    /* ══════════════════════════════════
+       HERO
+    ══════════════════════════════════ */
+    .hero {
+      padding: 80px 0 60px;
+      background:
+        radial-gradient(ellipse 80% 60% at 60% 0%, rgba(139,26,26,0.06), transparent),
+        radial-gradient(ellipse 50% 40% at 100% 80%, rgba(200,146,58,0.07), transparent),
+        var(--cream);
+      position: relative; overflow: hidden;
+    }
+
+    /* Decorative background pattern */
+    .hero::before {
+      content: '';
+      position: absolute;
+      right: -100px; top: -100px;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      border: 1px solid rgba(200,146,58,0.1);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      right: -60px; top: -60px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      border: 1px solid rgba(200,146,58,0.08);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 48px; align-items: center;
+      position: relative; z-index: 1;
+    }
+
+    .hero-copy { max-width: 620px; }
+
+    .hero-copy h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 5.5vw, 5.2rem);
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      margin: 16px 0 24px;
+      color: var(--charcoal);
+    }
+    .hero-copy h1 em {
+      font-style: italic;
+      color: var(--red);
+      display: block;
+    }
+
+    .hero-copy p {
+      font-size: 1.05rem; color: var(--muted);
+      max-width: 500px; line-height: 1.75;
+      margin-bottom: 36px;
+    }
+
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+
+    /* ── Promo Panel ────────────────── */
+    .hero-panel {
+      background: white;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 0; overflow: hidden;
+      animation: slideUp 0.8s ease 0.3s both;
+    }
+
+    .panel-head {
+      background: linear-gradient(135deg, var(--red-deep), var(--red));
+      padding: 22px 28px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .panel-head-label {
+      color: var(--gold-light); font-size: 0.7rem; letter-spacing: 0.18em;
+      text-transform: uppercase; font-weight: 700;
+    }
+    .panel-head h2 {
+      font-family: 'Playfair Display', serif;
+      color: white; font-size: 1.35rem; margin-top: 4px;
+    }
+    .panel-fire { font-size: 1.8rem; }
+
+    .promo-list { padding: 20px 28px; display: flex; flex-direction: column; gap: 2px; }
+
+    .promo-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(200,146,58,0.15);
+      transition: background 0.15s;
+    }
+    .promo-item:last-child { border-bottom: none; }
+
+    .promo-name { font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
+    .promo-icon { font-size: 1.3rem; }
+    .promo-prices { text-align: right; }
+    .promo-price { color: var(--red); font-weight: 900; font-size: 1.05rem; font-family: 'Playfair Display', serif; }
+    .old-price { color: var(--muted); font-size: 0.78rem; text-decoration: line-through; display: block; }
+
+    .panel-footer {
+      margin: 0 28px 24px;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      padding: 16px 18px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .panel-footer-icon { font-size: 1.4rem; }
+    .panel-footer-text { font-size: 0.82rem; color: var(--muted); }
+    .panel-footer-text a { color: var(--red); font-weight: 700; font-size: 0.95rem; display: block; }
+
+    /* ── Trust Strip ────────────────── */
+    .trust-strip {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: white; padding: 28px 0;
+    }
+    .trust-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; }
+    .trust-item {
+      display: flex; align-items: center; gap: 16px;
+      padding: 4px 32px;
+      border-right: 1px solid var(--border);
+    }
+    .trust-item:last-child { border-right: none; }
+    .trust-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .trust-copy strong { display: block; font-size: 0.88rem; font-weight: 700; letter-spacing: 0.03em; }
+    .trust-copy span { font-size: 0.78rem; color: var(--muted); }
+
+    /* ══════════════════════════════════
+       SECTIONS
+    ══════════════════════════════════ */
+    .section { padding: 96px 0; }
+    .section-alt { background: linear-gradient(to bottom, var(--cream-2), var(--cream)); }
+
+    .section-heading {
+      text-align: center; max-width: 660px; margin: 0 auto 56px;
+    }
+    .section-heading h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+      line-height: 1.1; margin: 10px 0 18px;
+    }
+    .section-heading p { color: var(--muted); font-size: 1rem; }
+
+    /* ══════════════════════════════════
+       BUTTONS
+    ══════════════════════════════════ */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 14px 28px;
+      font-family: 'Lato', sans-serif; font-weight: 700;
+      font-size: 0.82rem; letter-spacing: 0.1em; text-transform: uppercase;
+      border: none; cursor: pointer;
+      transition: all 0.22s ease; position: relative; overflow: hidden;
+    }
+    .btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: white; opacity: 0; transition: opacity 0.2s;
+    }
+    .btn:hover::before { opacity: 0.08; }
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--red-deep), var(--red));
+      color: white;
+      box-shadow: 0 8px 28px rgba(139,26,26,0.3);
+    }
+    .btn-gold {
+      background: linear-gradient(135deg, #9E6B22, var(--gold));
+      color: white;
+      box-shadow: 0 8px 28px rgba(200,146,58,0.3);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--charcoal);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-outline:hover { background: white; }
+    .btn-sm { padding: 9px 18px; font-size: 0.76rem; }
+    .btn-full { width: 100%; }
+
+    /* ══════════════════════════════════
+       CATALOG
+    ══════════════════════════════════ */
+    .catalog-bar {
+      background: white; border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin-bottom: 36px;
+      display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: space-between; gap: 16px;
+    }
+
+    .filter-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .filter-tag {
+      border: 1px solid var(--border);
+      background: white; color: var(--charcoal);
+      padding: 8px 18px; font-family: 'Lato', sans-serif;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .filter-tag:hover { border-color: var(--red); color: var(--red); }
+    .filter-tag.active {
+      background: var(--red); color: white; border-color: var(--red);
+    }
+
+    .filter-controls { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+    .filter-check {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; cursor: pointer; color: var(--muted);
+      transition: color 0.2s;
+    }
+    .filter-check:hover { color: var(--red); }
+    .filter-check input { accent-color: var(--red); width: 15px; height: 15px; }
+
+    .filter-sort select {
+      border: 1px solid var(--border); background: white;
+      padding: 8px 14px; font-family: 'Lato', sans-serif;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; cursor: pointer; color: var(--charcoal);
+    }
+
+    /* Products Grid */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px; margin-bottom: 40px;
+    }
+
+    .product-card {
+      background: white; border: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      position: relative; overflow: hidden;
+      opacity: 0; transform: translateY(16px);
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+    .product-card:hover { transform: translateY(-4px); box-shadow: 0 24px 60px rgba(28,20,16,0.12); }
+    .product-card.fade-in { opacity: 1; transform: translateY(0); transition: opacity 0.4s ease, transform 0.4s ease; }
+
+    .product-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(to right, var(--red-deep), var(--gold));
+      transform: scaleX(0); transition: transform 0.3s ease;
+    }
+    .product-card:hover::before { transform: scaleX(1); }
+
+    .promo-badge {
+      position: absolute; top: 14px; right: 14px;
+      background: var(--gold); color: white;
+      font-size: 0.65rem; font-weight: 900;
+      padding: 4px 10px; letter-spacing: 0.1em; text-transform: uppercase;
+      z-index: 1;
+    }
+
+    .product-img {
+      font-size: 3.2rem; text-align: center;
+      padding: 32px 20px 20px;
+      background: var(--cream);
+      line-height: 1; position: relative;
+    }
+
+    .product-body { padding: 18px 20px 22px; display: flex; flex-direction: column; flex: 1; gap: 6px; }
+
+    .product-cat {
+      font-size: 0.65rem; font-weight: 900; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--gold);
+    }
+
+    .product-body h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; line-height: 1.2; }
+    .product-body p { font-size: 0.83rem; color: var(--muted); flex: 1; line-height: 1.5; margin: 4px 0; }
+
+    .product-divider { height: 1px; background: var(--border); margin: 10px 0; }
+
+    .product-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px; flex-wrap: wrap;
+    }
+
+    .product-price { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--charcoal); }
+    .product-price small { font-family: 'Lato', sans-serif; font-size: 0.72rem; font-weight: 700; color: var(--muted); }
+    .product-price--sale { color: var(--red); }
+    .old-price-card { font-size: 0.75rem; color: var(--muted); text-decoration: line-through; display: block; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center; padding: 64px; color: var(--muted);
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
+      font-size: 1rem;
+    }
+
+    .catalog-cta {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+      padding: 24px 32px;
+      background: white; border: 1px solid var(--border);
+      margin-top: 8px;
+    }
+    .catalog-cta p { margin: 0; font-size: 0.92rem; color: var(--muted); }
+    .catalog-cta strong { color: var(--charcoal); }
+
+    /* ══════════════════════════════════
+       HOW IT WORKS
+    ══════════════════════════════════ */
+    .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+
+    .step-card {
+      background: white; border: 1px solid var(--border);
+      padding: 40px 36px; position: relative;
+      border-right: none; transition: background 0.2s;
+    }
+    .step-card:last-child { border-right: 1px solid var(--border); }
+    .step-card:hover { background: var(--cream); }
+
+    .step-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem; font-weight: 900;
+      color: var(--parchment); line-height: 1;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .step-number::after {
+      content: attr(data-n);
+      position: absolute; top: 8px; left: 4px;
+      color: var(--red); font-size: 4rem;
+      opacity: 0.15;
+    }
+
+    .step-card h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 12px; }
+    .step-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+
+    /* ══════════════════════════════════
+       ABOUT
+    ══════════════════════════════════ */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+
+    .about-visual {
+      background: linear-gradient(135deg, var(--red-deep), var(--red));
+      padding: 56px 48px; position: relative; overflow: hidden;
+    }
+    .about-visual::before {
+      content: 'TR';
+      position: absolute; top: -20px; right: -20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 12rem; font-weight: 900; color: white;
+      opacity: 0.06; line-height: 1;
+    }
+    .about-visual h2 {
+      font-family: 'Playfair Display', serif;
+      color: white; font-size: 2.2rem; line-height: 1.15; margin-bottom: 20px;
+      position: relative; z-index: 1;
+    }
+    .about-visual h2 em { font-style: italic; color: var(--gold-light); }
+    .about-visual p { color: rgba(255,255,255,0.75); font-size: 0.92rem; margin-bottom: 32px; position: relative; z-index: 1; }
+
+    .about-stat-row { display: flex; gap: 24px; flex-wrap: wrap; position: relative; z-index: 1; }
+    .stat {
+      background: rgba(255,255,255,0.12); padding: 18px 24px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: white; }
+    .stat-label { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-top: 4px; }
+
+    .about-content { }
+    .about-content h2 { font-family: 'Playfair Display', serif; font-size: 2rem; margin: 10px 0 20px; line-height: 1.15; }
+    .about-content p { color: var(--muted); margin-bottom: 16px; font-size: 0.95rem; }
+
+    .feature-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 28px; }
+    .feature-list li {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 0.9rem; font-weight: 700;
+    }
+    .feature-list li::before {
+      content: '';
+      width: 20px; height: 20px; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--red-deep), var(--red));
+      display: grid; place-items: center;
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    }
+    .check-icon { color: var(--red); font-size: 1rem; }
+
+    /* ══════════════════════════════════
+       ORDER FORM
+    ══════════════════════════════════ */
+    .order-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: start; }
+
+    .order-intro h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin: 10px 0 20px; line-height: 1.15; }
+    .order-intro p { color: var(--muted); margin-bottom: 16px; }
+    .order-phone {
+      margin-top: 32px; padding: 22px 24px;
+      background: white; border: 1px solid var(--border);
+      display: flex; align-items: center; gap: 16px;
+    }
+    .order-phone-icon { font-size: 2rem; }
+    .order-phone-text { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+    .order-phone-num { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--red); margin-top: 2px; }
+
+    .order-form {
+      background: white; border: 1px solid var(--border); padding: 40px;
+      box-shadow: var(--shadow);
+    }
+    .form-title {
+      font-family: 'Playfair Display', serif; font-size: 1.35rem;
+      margin-bottom: 28px; padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+    label { font-size: 0.72rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+
+    input, textarea, select {
+      width: 100%; border: 1px solid var(--border); background: var(--cream);
+      padding: 14px 16px; font-family: 'Lato', sans-serif;
+      font-size: 0.92rem; color: var(--charcoal);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    input:focus, textarea:focus {
+      outline: none; border-color: var(--red); background: white;
+    }
+
+    .form-note { margin-top: 16px; font-size: 0.85rem; font-weight: 700; min-height: 22px; }
+
+    /* ══════════════════════════════════
+       CONTACTS
+    ══════════════════════════════════ */
+    .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+    .contact-card {
+      background: white; border: 1px solid var(--border);
+      padding: 36px 32px; position: relative; overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .contact-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .contact-card::before {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(to right, var(--red), var(--gold));
+    }
+    .contact-card-icon { font-size: 2.2rem; margin-bottom: 16px; }
+    .contact-card h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 10px; }
+    .contact-card p, .contact-card a { font-size: 0.92rem; color: var(--muted); }
+    .contact-card a { color: var(--red); font-weight: 700; font-size: 1.1rem; }
+    .contact-card .sub { font-size: 0.78rem; margin-top: 6px; }
+
+    /* ══════════════════════════════════
+       FOOTER
+    ══════════════════════════════════ */
+    .site-footer {
+      background: var(--charcoal);
+      color: rgba(255,255,255,0.7);
+      padding: 48px 0 32px;
+    }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+
+    .footer-brand { }
+    .footer-logo {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
+    }
+    .footer-logo-mark {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--red-deep), var(--red));
+      display: grid; place-items: center;
+      color: var(--gold-light); font-family: 'Playfair Display', serif;
+      font-size: 1rem; font-weight: 900;
+      border: 1px solid rgba(200,146,58,0.4);
+    }
+    .footer-brand-name { font-family: 'Playfair Display', serif; color: white; font-size: 1rem; }
+    .footer-brand-loc { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); }
+
+    .footer-brand p { font-size: 0.85rem; line-height: 1.65; max-width: 280px; }
+
+    .footer-col h4 { color: white; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .footer-col p, .footer-col a { font-size: 0.85rem; display: block; margin-bottom: 8px; color: rgba(255,255,255,0.6); transition: color 0.2s; }
+    .footer-col a:hover { color: var(--gold-light); }
+
+    .footer-bottom {
+      padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.78rem; flex-wrap: wrap; gap: 12px;
+    }
+
+    /* ══════════════════════════════════
+       ANIMATIONS
+    ══════════════════════════════════ */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-copy { animation: slideUp 0.7s ease both; }
+    .hero-panel { animation: slideUp 0.7s ease 0.2s both; }
+
+    /* ══════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════ */
+    @media (max-width: 1100px) {
+      .products-grid { grid-template-columns: repeat(3,1fr); }
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid, .about-grid, .order-grid { grid-template-columns: 1fr; }
+      .hero-copy { max-width: 100%; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .step-card { border-right: 1px solid var(--border); border-bottom: none; }
+      .step-card:last-child { border-bottom: 1px solid var(--border); }
+      .contact-grid { grid-template-columns: 1fr; }
+      .trust-grid { grid-template-columns: 1fr; }
+      .trust-item { border-right: none; border-bottom: 1px solid var(--border); padding: 16px 0; }
+      .trust-item:last-child { border-bottom: none; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .products-grid { grid-template-columns: repeat(2,1fr); }
+      .catalog-bar { flex-direction: column; align-items: flex-start; }
+      .nav-links {
+        position: absolute; top: 80px; left: 0; right: 0;
+        background: rgba(250,245,238,0.98); border-bottom: 1px solid var(--border);
+        padding: 20px 24px; display: none; flex-direction: column; gap: 0;
+      }
+      .nav-links a {
+        padding: 14px 0; border-bottom: 1px solid var(--border);
+        display: block;
+      }
+      .nav-links a:last-child { border-bottom: none; }
+      .nav-links.open { display: flex; }
+      .menu-toggle { display: grid; place-items: center; }
+    }
+
+    @media (max-width: 640px) {
+      .section { padding: 72px 0; }
+      .hero { padding: 48px 0 40px; }
+      .products-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .product-body { padding: 14px 16px 18px; }
+      .product-img { font-size: 2.6rem; padding: 24px 16px 14px; }
+      .about-visual { padding: 40px 32px; }
+      .order-form { padding: 28px 24px; }
+    }
+
+    @media (max-width: 420px) {
+      .products-grid { grid-template-columns: 1fr; }
+      .hero-actions { flex-direction: column; }
+      .btn { width: 100%; justify-content: center; }
+    }
+  </style>
 </head>
 <body>
+
+  <!-- ═══════════════════ HEADER ═══════════════════ -->
   <header class="site-header" id="topo">
     <div class="container nav">
       <a href="#topo" class="logo">
-        <span class="logo-mark">TR</span>
-        <span class="logo-text">
+        <div class="logo-mark">TR</div>
+        <div class="logo-text">
           <strong>Talho Rodrigues</strong>
-          <small>Vila Verde, Braga</small>
-        </span>
+          <small>Vila Verde · Braga</small>
+        </div>
       </a>
 
       <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">☰</button>
@@ -30,441 +704,467 @@
         <a href="#servicos">Serviços</a>
         <a href="#sobre">Sobre</a>
         <a href="#contactos">Contactos</a>
-        <a href="#encomenda" class="btn btn-sm btn-light">Pedir encomenda</a>
+        <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
       </nav>
     </div>
   </header>
 
   <main>
+    <!-- ═══════════════════ HERO ═══════════════════ -->
     <section class="hero" id="inicio">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <span class="eyebrow">Qualidade • Tradição • Confiança</span>
-          <h1>Carnes frescas<br><span>selecionadas</span> para a sua mesa.</h1>
-          <p>
-            Produtos de qualidade, atendimento próximo e preços justos.
-            Faça o seu pedido online ou venha visitar-nos em Vila Verde, Braga.
-          </p>
-
+          <span class="eyebrow">Qualidade · Tradição · Confiança</span>
+          <h1>Carnes frescas<br><em>selecionadas</em><br>para a sua mesa.</h1>
+          <p>Produtos de qualidade, atendimento próximo e preços justos. Faça o seu pedido online ou venha visitar-nos em Vila Verde, Braga.</p>
           <div class="hero-actions">
             <a href="#catalogo" class="btn btn-primary">Ver produtos</a>
-            <a href="tel:253322600" class="btn btn-secondary">Ligar: 253 322 600</a>
-          </div>
-
-          <div class="hero-highlights">
-            <div class="card mini-card">
-              <strong>📍 Localização</strong>
-              <span>Vila Verde, Braga</span>
-            </div>
-            <div class="card mini-card">
-              <strong>🕐 Horário</strong>
-              <span>Seg–Sáb, 8h–19h</span>
-            </div>
-            <div class="card mini-card">
-              <strong>🚚 Encomendas</strong>
-              <span>Levantamento na loja</span>
-            </div>
+            <a href="tel:253322600" class="btn btn-outline">📞 253 322 600</a>
           </div>
         </div>
 
-        <div class="hero-panel card">
-          <div class="badge">Hoje em destaque</div>
-          <h2>Promoções da semana</h2>
+        <div class="hero-panel">
+          <div class="panel-head">
+            <span class="panel-fire">🔥</span>
+            <div>
+              <div class="panel-head-label">Esta semana</div>
+              <h2>Promoções em destaque</h2>
+            </div>
+          </div>
           <div class="promo-list">
             <div class="promo-item">
-              <span>🥩 Entrecosto de Porco</span>
-              <strong class="promo-price">4,99 €/kg</strong>
+              <div class="promo-name"><span class="promo-icon">🥩</span> Entrecosto de Porco</div>
+              <div class="promo-prices">
+                <span class="old-price">6,50 €/kg</span>
+                <span class="promo-price">4,99 €/kg</span>
+              </div>
             </div>
             <div class="promo-item">
-              <span>🐔 Frango do Campo</span>
-              <strong class="promo-price">3,49 €/kg</strong>
+              <div class="promo-name"><span class="promo-icon">🐔</span> Frango do Campo</div>
+              <div class="promo-prices">
+                <span class="old-price">4,20 €/kg</span>
+                <span class="promo-price">3,49 €/kg</span>
+              </div>
             </div>
             <div class="promo-item">
-              <span>🥩 Bife de Novilho</span>
-              <strong class="promo-price">11,90 €/kg</strong>
+              <div class="promo-name"><span class="promo-icon">🥩</span> Bife de Novilho</div>
+              <div class="promo-prices">
+                <span class="promo-price">11,90 €/kg</span>
+              </div>
             </div>
-            <div class="promo-item promo-item--sale">
-              <span>🥓 Chouriço da Casa</span>
-              <div>
-                <s class="old-price">7,50 €/kg</s>
-                <strong class="promo-price">5,99 €/kg</strong>
+            <div class="promo-item">
+              <div class="promo-name"><span class="promo-icon">🌭</span> Chouriço da Casa</div>
+              <div class="promo-prices">
+                <span class="old-price">7,50 €/kg</span>
+                <span class="promo-price">5,99 €/kg</span>
               </div>
             </div>
           </div>
-          <div class="info-box">
-            <strong>Contacto principal</strong>
-            <p>Telefone: <a href="tel:253322600">253 322 600</a></p>
+          <div class="panel-footer">
+            <div class="panel-footer-icon">📞</div>
+            <div class="panel-footer-text">
+              Reservas e encomendas
+              <a href="tel:253322600">253 322 600</a>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section strip">
-      <div class="container strip-grid">
-        <div>
-          <strong>🏆 Qualidade garantida</strong>
-          <p>Carnes frescas selecionadas diariamente com origem controlada.</p>
+    <!-- ═══════════════════ TRUST STRIP ═══════════════════ -->
+    <div class="trust-strip">
+      <div class="container trust-grid">
+        <div class="trust-item">
+          <div class="trust-icon">🏆</div>
+          <div class="trust-copy">
+            <strong>Qualidade garantida</strong>
+            <span>Carnes frescas selecionadas diariamente, origem controlada.</span>
+          </div>
         </div>
-        <div>
-          <strong>👨‍🍳 Corte personalizado</strong>
-          <p>O talho corta ao seu gosto e prepara como prefere.</p>
+        <div class="trust-item">
+          <div class="trust-icon">🔪</div>
+          <div class="trust-copy">
+            <strong>Corte personalizado</strong>
+            <span>Preparamos ao seu gosto, exatamente como prefere.</span>
+          </div>
         </div>
-        <div>
-          <strong>📦 Encomendas rápidas</strong>
-          <p>Faça o pedido online e levante na loja na hora que quiser.</p>
+        <div class="trust-item">
+          <div class="trust-icon">📦</div>
+          <div class="trust-copy">
+            <strong>Encomendas rápidas</strong>
+            <span>Faça o pedido online e levante na hora que quiser.</span>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- CATÁLOGO DE PRODUTOS -->
+    <!-- ═══════════════════ CATALOG ═══════════════════ -->
     <section class="section" id="catalogo">
       <div class="container">
         <div class="section-heading">
           <span class="eyebrow">Catálogo</span>
           <h2>Os nossos produtos</h2>
-          <p>Consulte os preços e disponibilidade. Faça o seu pedido de encomenda no final da página.</p>
+          <p>Consulte preços e disponibilidade. Clique em «Encomendar» para pré-preencher o formulário automaticamente.</p>
         </div>
 
-        <!-- Filtros -->
-        <div class="catalog-filters">
+        <div class="catalog-bar">
           <div class="filter-tags" id="categoryFilters">
             <button class="filter-tag active" data-cat="todos">Todos</button>
             <button class="filter-tag" data-cat="vaca">🐄 Vaca</button>
             <button class="filter-tag" data-cat="porco">🐷 Porco</button>
-            <button class="filter-tag" data-cat="frango">🐔 Frango e Aves</button>
+            <button class="filter-tag" data-cat="frango">🐔 Aves</button>
             <button class="filter-tag" data-cat="preparados">🍖 Preparados</button>
-            <button class="filter-tag" data-cat="enchidos">🥩 Enchidos</button>
+            <button class="filter-tag" data-cat="enchidos">🌭 Enchidos</button>
             <button class="filter-tag" data-cat="promocao">🏷️ Promoções</button>
           </div>
-
-          <div class="filter-options">
+          <div class="filter-controls">
             <label class="filter-check">
-              <input type="checkbox" id="filterPromo" /> Só promoções
+              <input type="checkbox" id="filterPromo"> Só promoções
             </label>
-            <div class="filter-sort">
+            <div>
               <select id="sortSelect">
                 <option value="default">Ordenar por</option>
-                <option value="preco-asc">Preço: menor primeiro</option>
-                <option value="preco-desc">Preço: maior primeiro</option>
+                <option value="preco-asc">Preço ↑</option>
+                <option value="preco-desc">Preço ↓</option>
                 <option value="nome">Nome A–Z</option>
               </select>
             </div>
           </div>
         </div>
 
-        <!-- Grid de produtos -->
         <div class="products-grid" id="productsGrid">
           <!-- Vaca -->
-          <article class="product-card card" data-cat="vaca" data-price="11.90" data-name="Bife de Novilho">
+          <article class="product-card" data-cat="vaca" data-price="11.90" data-name="Bife de Novilho">
             <div class="product-img">🥩</div>
             <div class="product-body">
               <span class="product-cat">Vaca</span>
               <h3>Bife de Novilho</h3>
               <p>Corte tenro e suculento, ideal para grelhar ou frigideira.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">11,90 €<small>/kg</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card card" data-cat="vaca" data-price="7.90" data-name="Carne para Estufar">
+          <article class="product-card" data-cat="vaca" data-price="7.90" data-name="Carne para Estufar">
             <div class="product-img">🍖</div>
             <div class="product-body">
               <span class="product-cat">Vaca</span>
               <h3>Carne para Estufar</h3>
               <p>Peças selecionadas para guisados e estufados saborosos.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">7,90 €<small>/kg</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card card" data-cat="vaca" data-price="14.50" data-name="Lombo de Novilho">
+          <article class="product-card" data-cat="vaca" data-price="14.50" data-name="Lombo de Novilho">
             <div class="product-img">🥩</div>
             <div class="product-body">
               <span class="product-cat">Vaca</span>
               <h3>Lombo de Novilho</h3>
               <p>Corte nobre, perfeito para ocasiões especiais e assados.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">14,50 €<small>/kg</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card card" data-cat="vaca" data-price="6.20" data-name="Carne Picada de Vaca">
+          <article class="product-card" data-cat="vaca" data-price="6.20" data-name="Carne Picada de Vaca">
             <div class="product-img">🫙</div>
             <div class="product-body">
               <span class="product-cat">Vaca</span>
               <h3>Carne Picada de Vaca</h3>
-              <p>Fresca e preparada na hora para bolonhesa, hambúrgueres e mais.</p>
+              <p>Fresca e preparada na hora para bolonhesa e hambúrgueres.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">6,20 €<small>/kg</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
           <!-- Porco -->
-          <article class="product-card card" data-cat="porco" data-price="4.99" data-name="Entrecosto de Porco" data-promo="true">
-            <div class="promo-badge">🏷️ Promoção</div>
+          <article class="product-card" data-cat="porco" data-price="4.99" data-name="Entrecosto de Porco" data-promo="true">
+            <div class="promo-badge">Promoção</div>
             <div class="product-img">🥩</div>
             <div class="product-body">
               <span class="product-cat">Porco</span>
               <h3>Entrecosto de Porco</h3>
               <p>Ideal para grelhar ou assar. Peça favorita dos clientes.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <div>
-                  <s class="old-price-card">6,50 €/kg</s>
+                  <span class="old-price-card">6,50 €/kg</span>
                   <span class="product-price product-price--sale">4,99 €<small>/kg</small></span>
                 </div>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card card" data-cat="porco" data-price="5.50" data-name="Costeleta de Porco">
+          <article class="product-card" data-cat="porco" data-price="5.50" data-name="Costeleta de Porco">
             <div class="product-img">🍖</div>
             <div class="product-body">
               <span class="product-cat">Porco</span>
               <h3>Costeleta de Porco</h3>
               <p>Peça clássica, corte ao gosto do cliente.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">5,50 €<small>/kg</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card card" data-cat="porco" data-price="6.90" data-name="Lombinho de Porco">
+          <article class="product-card" data-cat="porco" data-price="6.90" data-name="Lombinho de Porco">
             <div class="product-img">🥩</div>
             <div class="product-body">
               <span class="product-cat">Porco</span>
               <h3>Lombinho de Porco</h3>
               <p>Corte magro e tenro, perfeito para grelhar ou saltear.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">6,90 €<small>/kg</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card card" data-cat="porco" data-price="3.80" data-name="Pá de Porco">
+          <article class="product-card" data-cat="porco" data-price="3.80" data-name="Pá de Porco">
             <div class="product-img">🍖</div>
             <div class="product-body">
               <span class="product-cat">Porco</span>
               <h3>Pá de Porco</h3>
               <p>Ótima para assados no forno e caldeiradas.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">3,80 €<small>/kg</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
           <!-- Frango -->
-          <article class="product-card card" data-cat="frango" data-price="3.49" data-name="Frango do Campo" data-promo="true">
-            <div class="promo-badge">🏷️ Promoção</div>
+          <article class="product-card" data-cat="frango" data-price="3.49" data-name="Frango do Campo" data-promo="true">
+            <div class="promo-badge">Promoção</div>
             <div class="product-img">🐔</div>
             <div class="product-body">
               <span class="product-cat">Frango e Aves</span>
               <h3>Frango do Campo</h3>
               <p>Frango inteiro criado ao ar livre. Sabor intenso e genuíno.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <div>
-                  <s class="old-price-card">4,20 €/kg</s>
+                  <span class="old-price-card">4,20 €/kg</span>
                   <span class="product-price product-price--sale">3,49 €<small>/kg</small></span>
                 </div>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card card" data-cat="frango" data-price="5.90" data-name="Peito de Frango">
+          <article class="product-card" data-cat="frango" data-price="5.90" data-name="Peito de Frango">
             <div class="product-img">🐔</div>
             <div class="product-body">
               <span class="product-cat">Frango e Aves</span>
               <h3>Peito de Frango</h3>
               <p>Filetes limpos e fatiados ao gosto do cliente.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">5,90 €<small>/kg</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card card" data-cat="frango" data-price="4.50" data-name="Coxa e Sobrecoxa">
+          <article class="product-card" data-cat="frango" data-price="4.50" data-name="Coxa e Sobrecoxa">
             <div class="product-img">🍗</div>
             <div class="product-body">
               <span class="product-cat">Frango e Aves</span>
               <h3>Coxa e Sobrecoxa</h3>
               <p>Ideal para assados, guisados ou na brasa.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">4,50 €<small>/kg</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card card" data-cat="frango" data-price="6.80" data-name="Peru — Peito Fatiado">
+          <article class="product-card" data-cat="frango" data-price="6.80" data-name="Peru — Peito Fatiado">
             <div class="product-img">🦃</div>
             <div class="product-body">
               <span class="product-cat">Frango e Aves</span>
               <h3>Peru — Peito Fatiado</h3>
               <p>Carne magra e saborosa para refeições ligeiras.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">6,80 €<small>/kg</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
           <!-- Preparados -->
-          <article class="product-card card" data-cat="preparados" data-price="7.50" data-name="Hambúrgueres Artesanais">
+          <article class="product-card" data-cat="preparados" data-price="7.50" data-name="Hambúrgueres Artesanais">
             <div class="product-img">🍔</div>
             <div class="product-body">
               <span class="product-cat">Preparados</span>
               <h3>Hambúrgueres Artesanais</h3>
               <p>Feitos na hora com carne fresca. Pack de 4 unidades (±600g).</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">7,50 €<small>/pack</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card card" data-cat="preparados" data-price="8.90" data-name="Espetadas Mistas">
+          <article class="product-card" data-cat="preparados" data-price="8.90" data-name="Espetadas Mistas">
             <div class="product-img">🍢</div>
             <div class="product-body">
               <span class="product-cat">Preparados</span>
               <h3>Espetadas Mistas</h3>
               <p>Porco e frango marinados. Pack de 4 espetadas prontas para grelhar.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">8,90 €<small>/pack</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card card" data-cat="preparados" data-price="6.80" data-name="Costeletas Marinadas">
+          <article class="product-card" data-cat="preparados" data-price="6.80" data-name="Costeletas Marinadas">
             <div class="product-img">🥩</div>
             <div class="product-body">
               <span class="product-cat">Preparados</span>
               <h3>Costeletas Marinadas</h3>
               <p>Marinada da casa com ervas e especiarias. Prontas a grelhar.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">6,80 €<small>/kg</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card card" data-cat="preparados" data-price="9.50" data-name="Pack Família — Churrasco">
+          <article class="product-card" data-cat="preparados" data-price="9.50" data-name="Pack Família — Churrasco">
             <div class="product-img">🔥</div>
             <div class="product-body">
               <span class="product-cat">Preparados</span>
               <h3>Pack Família — Churrasco</h3>
-              <p>Combinação de costeletas, espetadas e asas de frango para 4–6 pessoas.</p>
+              <p>Costeletas, espetadas e asas de frango para 4–6 pessoas.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">9,50 €<small>/kg</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
           <!-- Enchidos -->
-          <article class="product-card card" data-cat="enchidos" data-price="5.99" data-name="Chouriço da Casa" data-promo="true">
-            <div class="promo-badge">🏷️ Promoção</div>
+          <article class="product-card" data-cat="enchidos" data-price="5.99" data-name="Chouriço da Casa" data-promo="true">
+            <div class="promo-badge">Promoção</div>
             <div class="product-img">🌭</div>
             <div class="product-body">
               <span class="product-cat">Enchidos</span>
               <h3>Chouriço da Casa</h3>
               <p>Receita tradicional, fumado lentamente. Especialidade da casa.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <div>
-                  <s class="old-price-card">7,50 €/kg</s>
+                  <span class="old-price-card">7,50 €/kg</span>
                   <span class="product-price product-price--sale">5,99 €<small>/kg</small></span>
                 </div>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card card" data-cat="enchidos" data-price="6.50" data-name="Linguiça Caseira">
+          <article class="product-card" data-cat="enchidos" data-price="6.50" data-name="Linguiça Caseira">
             <div class="product-img">🌭</div>
             <div class="product-body">
               <span class="product-cat">Enchidos</span>
               <h3>Linguiça Caseira</h3>
               <p>Preparada artesanalmente com temperos tradicionais do Minho.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">6,50 €<small>/kg</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card card" data-cat="enchidos" data-price="8.20" data-name="Morcela de Arroz">
+          <article class="product-card" data-cat="enchidos" data-price="8.20" data-name="Morcela de Arroz">
             <div class="product-img">🫙</div>
             <div class="product-body">
               <span class="product-cat">Enchidos</span>
               <h3>Morcela de Arroz</h3>
               <p>Especialidade regional, perfeita para cozido ou grelhada.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">8,20 €<small>/kg</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card card" data-cat="enchidos" data-price="9.80" data-name="Presunto da Serra">
+          <article class="product-card" data-cat="enchidos" data-price="9.80" data-name="Presunto da Serra">
             <div class="product-img">🍖</div>
             <div class="product-body">
               <span class="product-cat">Enchidos</span>
               <h3>Presunto da Serra</h3>
               <p>Curado naturalmente, com sabor intenso e textura única.</p>
+              <div class="product-divider"></div>
               <div class="product-footer">
                 <span class="product-price">9,80 €<small>/kg</small></span>
-                <a href="#encomenda" class="btn btn-sm btn-primary">Encomendar</a>
+                <a href="#encomenda" class="btn btn-primary btn-sm">Encomendar</a>
               </div>
             </div>
           </article>
         </div>
 
-        <!-- Estado vazio -->
         <div class="empty-state" id="emptyState" style="display:none;">
           <p>😕 Nenhum produto encontrado com esses filtros.</p>
-          <button class="btn btn-secondary" onclick="resetFilters()">Limpar filtros</button>
+          <button class="btn btn-outline" onclick="resetFilters()">Limpar filtros</button>
         </div>
 
         <div class="catalog-cta">
           <p>Não encontrou o que procura? <strong>Fale connosco</strong> — temos muito mais disponível na loja.</p>
-          <a href="tel:253322600" class="btn btn-secondary">📞 Ligar agora</a>
+          <a href="tel:253322600" class="btn btn-outline">📞 Ligar agora</a>
         </div>
       </div>
     </section>
 
-    <section class="section alt" id="servicos">
+    <!-- ═══════════════════ HOW IT WORKS ═══════════════════ -->
+    <section class="section section-alt" id="servicos">
       <div class="container">
         <div class="section-heading">
-          <span class="eyebrow">Serviços</span>
-          <h2>Como funciona a encomenda</h2>
+          <span class="eyebrow">Como funciona</span>
+          <h2>Fazer uma encomenda é simples</h2>
+          <p>Em três passos tem a sua carne pronta para levantar.</p>
         </div>
 
-        <div class="service-layout">
-          <div class="card">
-            <div class="service-step">1</div>
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-number" data-n="1">01</div>
             <h3>Escolha os produtos</h3>
             <p>Navegue pelo catálogo, consulte os preços e decida o que pretende encomendar.</p>
           </div>
-          <div class="card">
-            <div class="service-step">2</div>
+          <div class="step-card">
+            <div class="step-number" data-n="2">02</div>
             <h3>Envie o pedido</h3>
             <p>Preencha o formulário com o nome, contacto e produtos desejados. Recebemos de imediato.</p>
           </div>
-          <div class="card">
-            <div class="service-step">3</div>
+          <div class="step-card">
+            <div class="step-number" data-n="3">03</div>
             <h3>Levante na loja</h3>
             <p>Confirmamos o pedido por telefone e a encomenda fica pronta para levantamento na hora combinada.</p>
           </div>
@@ -472,127 +1172,287 @@
       </div>
     </section>
 
+    <!-- ═══════════════════ ABOUT ═══════════════════ -->
     <section class="section" id="sobre">
       <div class="container about-grid">
-        <div>
-          <span class="eyebrow">Sobre nós</span>
-          <h2>Um talho de confiança em Vila Verde</h2>
-          <p>
-            O Talho Rodrigues serve a comunidade de Vila Verde com carnes frescas e de qualidade,
-            selecionadas com cuidado e preparadas ao gosto de cada cliente.
-          </p>
-          <p>
-            Do corte tradicional ao preparado especial, garantimos o melhor produto
-            com o atendimento próximo que nos distingue.
-          </p>
+        <div class="about-visual">
+          <h2>Um talho de <em>confiança</em> em Vila Verde</h2>
+          <p>Servimos a comunidade há anos com carnes frescas e de qualidade, selecionadas com cuidado e preparadas ao gosto de cada cliente.</p>
+          <p>Do corte tradicional ao preparado especial, garantimos o melhor produto com o atendimento próximo que nos distingue.</p>
+          <div class="about-stat-row">
+            <div class="stat">
+              <div class="stat-num">20+</div>
+              <div class="stat-label">Anos de experiência</div>
+            </div>
+            <div class="stat">
+              <div class="stat-num">100%</div>
+              <div class="stat-label">Carne fresca diária</div>
+            </div>
+          </div>
         </div>
-        <div class="card highlight-card">
-          <h3>Porque escolher o Talho Rodrigues?</h3>
+
+        <div class="about-content">
+          <span class="eyebrow">Porquê escolher-nos</span>
+          <h2>A diferença está nos detalhes</h2>
+          <p>No Talho Rodrigues, cada peça é tratada com o rigor e o carinho que a sua família merece. Trabalhamos com fornecedores locais e controlamos a origem de cada produto.</p>
           <ul class="feature-list">
-            <li>✅ Carne fresca todos os dias</li>
-            <li>✅ Origem controlada e rastreável</li>
-            <li>✅ Corte personalizado ao pedido</li>
-            <li>✅ Preparados artesanais da casa</li>
-            <li>✅ Enchidos e especialidades regionais</li>
-            <li>✅ Atendimento próximo e de confiança</li>
+            <li><span class="check-icon">✓</span> Carne fresca todos os dias</li>
+            <li><span class="check-icon">✓</span> Origem controlada e rastreável</li>
+            <li><span class="check-icon">✓</span> Corte personalizado ao pedido</li>
+            <li><span class="check-icon">✓</span> Preparados artesanais da casa</li>
+            <li><span class="check-icon">✓</span> Enchidos e especialidades regionais</li>
+            <li><span class="check-icon">✓</span> Atendimento próximo e de confiança</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <section class="section alt" id="encomenda">
+    <!-- ═══════════════════ ORDER ═══════════════════ -->
+    <section class="section section-alt" id="encomenda">
       <div class="container order-grid">
-        <div>
+        <div class="order-intro">
           <span class="eyebrow">Encomendas</span>
-          <h2>Faça o seu pedido</h2>
-          <p>
-            Preencha o formulário com os produtos que deseja e entraremos em contacto para confirmar
-            a disponibilidade e hora de levantamento.
-          </p>
-          <div class="order-info">
-            <p>📞 Ou ligue diretamente: <a href="tel:253322600"><strong>253 322 600</strong></a></p>
+          <h2>Faça o seu pedido online</h2>
+          <p>Preencha o formulário com os produtos que deseja e entraremos em contacto para confirmar a disponibilidade e hora de levantamento.</p>
+          <p>Respondemos rapidamente durante o horário de funcionamento.</p>
+          <div class="order-phone">
+            <div class="order-phone-icon">📞</div>
+            <div>
+              <div class="order-phone-text">Ou ligue diretamente</div>
+              <div class="order-phone-num"><a href="tel:253322600">253 322 600</a></div>
+            </div>
           </div>
         </div>
 
-        <form class="card order-form" id="orderForm">
-          <div class="form-row">
-            <label for="nome">Nome *</label>
-            <input id="nome" name="nome" type="text" placeholder="O seu nome" required />
-          </div>
-
-          <div class="form-row">
-            <label for="telefone">Telefone *</label>
-            <input id="telefone" name="telefone" type="tel" placeholder="Ex: 912 345 678" required />
-          </div>
-
-          <div class="form-row">
-            <label for="produto">Produto / pedido *</label>
-            <input id="produto" name="produto" type="text" placeholder="Ex: 2kg costeletas de porco, 1 frango inteiro..." required />
-          </div>
-
-          <div class="form-row">
-            <label for="data">Data de levantamento</label>
-            <input id="data" name="data" type="date" />
-          </div>
-
-          <div class="form-row">
-            <label for="mensagem">Observações</label>
-            <textarea id="mensagem" name="mensagem" rows="4" placeholder="Detalhes do corte, quantidade, hora de recolha, etc."></textarea>
-          </div>
-
-          <button type="submit" class="btn btn-primary btn-full">✉️ Enviar pedido</button>
-          <p class="form-note" id="formMessage"></p>
-        </form>
+        <div class="order-form">
+          <div class="form-title">Formulário de encomenda</div>
+          <form id="orderForm">
+            <div class="form-row">
+              <label for="nome">Nome *</label>
+              <input id="nome" name="nome" type="text" placeholder="O seu nome completo" required />
+            </div>
+            <div class="form-row">
+              <label for="telefone">Telefone *</label>
+              <input id="telefone" name="telefone" type="tel" placeholder="Ex: 912 345 678" required />
+            </div>
+            <div class="form-row">
+              <label for="produto">Produto / pedido *</label>
+              <input id="produto" name="produto" type="text" placeholder="Ex: 2kg costeletas de porco..." required />
+            </div>
+            <div class="form-row">
+              <label for="data">Data de levantamento</label>
+              <input id="data" name="data" type="date" />
+            </div>
+            <div class="form-row">
+              <label for="mensagem">Observações</label>
+              <textarea id="mensagem" name="mensagem" rows="4" placeholder="Detalhes do corte, quantidade, hora de recolha, etc."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">✉️ Enviar pedido</button>
+            <p class="form-note" id="formMessage"></p>
+          </form>
+        </div>
       </div>
     </section>
 
+    <!-- ═══════════════════ CONTACTS ═══════════════════ -->
     <section class="section" id="contactos">
       <div class="container">
         <div class="section-heading">
           <span class="eyebrow">Contactos</span>
           <h2>Fale com o Talho Rodrigues</h2>
+          <p>Estamos disponíveis durante o horário de funcionamento para atender todas as suas dúvidas.</p>
         </div>
-
         <div class="contact-grid">
-          <div class="card">
-            <h3>📞 Telefone</h3>
-            <p><a href="tel:253322600">253 322 600</a></p>
-            <p class="muted-text">Disponível durante o horário de funcionamento</p>
+          <div class="contact-card">
+            <div class="contact-card-icon">📞</div>
+            <h3>Telefone</h3>
+            <a href="tel:253322600">253 322 600</a>
+            <p class="sub">Disponível seg–sáb, 8h–19h</p>
           </div>
-          <div class="card">
-            <h3>📍 Localização</h3>
+          <div class="contact-card">
+            <div class="contact-card-icon">📍</div>
+            <h3>Localização</h3>
             <p>Vila Verde, Braga</p>
-            <p class="muted-text">Venha visitar-nos na nossa loja</p>
+            <p class="sub">Venha visitar-nos na nossa loja</p>
           </div>
-          <div class="card">
-            <h3>🕐 Horário</h3>
+          <div class="contact-card">
+            <div class="contact-card-icon">🕐</div>
+            <h3>Horário</h3>
             <p>Segunda a Sábado</p>
-            <p class="muted-text">08h00 – 19h00</p>
+            <p class="sub">08h00 – 19h00</p>
           </div>
         </div>
       </div>
     </section>
   </main>
 
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
   <footer class="site-footer">
-    <div class="container footer-grid">
-      <div>
-        <strong>Talho Rodrigues</strong>
-        <p>Vila Verde, Braga</p>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <div class="footer-logo-mark">TR</div>
+            <div>
+              <div class="footer-brand-name">Talho Rodrigues</div>
+              <div class="footer-brand-loc">Vila Verde · Braga</div>
+            </div>
+          </div>
+          <p>Carnes frescas e de qualidade para a sua família, com o atendimento próximo que nos distingue há mais de 20 anos.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navegação</h4>
+          <a href="#inicio">Início</a>
+          <a href="#catalogo">Produtos</a>
+          <a href="#servicos">Serviços</a>
+          <a href="#sobre">Sobre nós</a>
+          <a href="#contactos">Contactos</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>Contacto</h4>
+          <p>📞 <a href="tel:253322600">253 322 600</a></p>
+          <p>📍 Vila Verde, Braga</p>
+          <p>🕐 Seg–Sáb: 08h–19h</p>
+        </div>
       </div>
-      <div>
-        <p>📞 <a href="tel:253322600">253 322 600</a></p>
-        <p>🕐 Seg–Sáb: 08h–19h</p>
+
+      <div class="footer-bottom">
+        <span>© 2025 Talho Rodrigues. Todos os direitos reservados.</span>
+        <span>Feito com ❤️ em Vila Verde</span>
       </div>
-      <div>
-        <p>Carnes frescas e de qualidade para a sua família.</p>
-      </div>
-    </div>
-    <div class="container footer-bottom">
-      <p>© 2025 Talho Rodrigues. Todos os direitos reservados.</p>
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    // ── Menu Toggle ────────────────────────────────
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    if (menuToggle && navLinks) {
+      menuToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => navLinks.classList.remove('open'));
+      });
+    }
+
+    // ── Order Form ─────────────────────────────────
+    const orderForm = document.getElementById('orderForm');
+    const formMessage = document.getElementById('formMessage');
+
+    if (orderForm) {
+      orderForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nome = document.getElementById('nome').value.trim();
+        const telefone = document.getElementById('telefone').value.trim();
+        const produto = document.getElementById('produto').value.trim();
+
+        if (!nome || !telefone || !produto) {
+          formMessage.textContent = '⚠️ Por favor preencha os campos obrigatórios antes de enviar.';
+          formMessage.style.color = '#8B1A1A';
+          return;
+        }
+
+        formMessage.innerHTML = '✅ <strong>Pedido recebido!</strong> Entraremos em contacto em breve para confirmar a sua encomenda.';
+        formMessage.style.color = '#1f6b1f';
+        orderForm.reset();
+        formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    }
+
+    // ── Catalog Filters ────────────────────────────
+    const categoryFilters = document.getElementById('categoryFilters');
+    const filterPromo = document.getElementById('filterPromo');
+    const sortSelect = document.getElementById('sortSelect');
+    const productsGrid = document.getElementById('productsGrid');
+    const emptyState = document.getElementById('emptyState');
+
+    let activeCategory = 'todos';
+
+    function getProducts() { return Array.from(document.querySelectorAll('.product-card')); }
+
+    function applyFilters() {
+      const products = getProducts();
+      const onlyPromo = filterPromo && filterPromo.checked;
+      const sortValue = sortSelect ? sortSelect.value : 'default';
+
+      let visible = products.filter(p => {
+        const cat = p.dataset.cat || '';
+        const isPromo = p.dataset.promo === 'true';
+        return (activeCategory === 'todos' || cat === activeCategory) && (!onlyPromo || isPromo);
+      });
+
+      products.forEach(p => { p.style.display = 'none'; p.classList.remove('fade-in'); });
+
+      if (sortValue === 'preco-asc') visible.sort((a,b) => +a.dataset.price - +b.dataset.price);
+      else if (sortValue === 'preco-desc') visible.sort((a,b) => +b.dataset.price - +a.dataset.price);
+      else if (sortValue === 'nome') visible.sort((a,b) => (a.dataset.name||'').localeCompare(b.dataset.name||'', 'pt'));
+
+      if (visible.length === 0) {
+        emptyState && (emptyState.style.display = 'flex');
+      } else {
+        emptyState && (emptyState.style.display = 'none');
+        visible.forEach((p, i) => {
+          p.style.display = '';
+          productsGrid.appendChild(p);
+          setTimeout(() => p.classList.add('fade-in'), i * 40);
+        });
+      }
+    }
+
+    if (categoryFilters) {
+      categoryFilters.querySelectorAll('.filter-tag').forEach(btn => {
+        btn.addEventListener('click', () => {
+          categoryFilters.querySelectorAll('.filter-tag').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeCategory = btn.dataset.cat;
+          applyFilters();
+        });
+      });
+    }
+
+    if (filterPromo) filterPromo.addEventListener('change', applyFilters);
+    if (sortSelect) sortSelect.addEventListener('change', applyFilters);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      getProducts().forEach((p, i) => setTimeout(() => p.classList.add('fade-in'), i * 50));
+    });
+
+    function resetFilters() {
+      activeCategory = 'todos';
+      if (filterPromo) filterPromo.checked = false;
+      if (sortSelect) sortSelect.value = 'default';
+      if (categoryFilters) {
+        categoryFilters.querySelectorAll('.filter-tag').forEach(b => b.classList.remove('active'));
+        const todoBtn = categoryFilters.querySelector('[data-cat="todos"]');
+        if (todoBtn) todoBtn.classList.add('active');
+      }
+      applyFilters();
+    }
+
+    // ── Order prefill from catalog ─────────────────
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('a[href="#encomenda"]');
+      if (!btn) return;
+      const card = btn.closest('.product-card');
+      if (!card) return;
+      const productName = card.dataset.name || '';
+      setTimeout(() => {
+        const produtoInput = document.getElementById('produto');
+        if (produtoInput && productName && !produtoInput.value) {
+          produtoInput.value = productName;
+          produtoInput.focus();
+        }
+      }, 500);
+    });
+
+    // ── Sticky header shadow on scroll ───────────
+    const header = document.querySelector('.site-header');
+    window.addEventListener('scroll', () => {
+      header.style.boxShadow = window.scrollY > 10
+        ? '0 4px 24px rgba(28,20,16,0.1)' : 'none';
+    }, { passive: true });
+  </script>
 </body>
 </html>
