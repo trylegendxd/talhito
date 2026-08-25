@@ -1,24 +1,246 @@
-name: Inspect Reel Scheduler service
+name: Build Reel Scheduler APK
 
 on:
   push:
     branches: [ reel-scheduler-apk-build ]
+  workflow_dispatch:
 
 concurrency:
   group: reel-scheduler-apk-build
   cancel-in-progress: true
 
 jobs:
-  inspect:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Install Android SDK 35
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
       - name: Decode source
         run: |
           cat reelscheduler-source.part* > reelscheduler-full.b64
+          test "$(wc -c < reelscheduler-full.b64)" -eq 29196
           base64 -d reelscheduler-full.b64 > reelscheduler.zip
+          unzip -t reelscheduler.zip
           unzip -q reelscheduler.zip
-      - name: Print Instagram automation source
+      - name: Apply Instagram recipient auto-select fix
         run: |
-          echo '===== InstagramAccessibilityService.kt ====='
-          cat ReelSchedulerAndroid/app/src/main/java/com/rushx/reelscheduler/InstagramAccessibilityService.kt
+          cat > ReelSchedulerAndroid/app/src/main/java/com/rushx/reelscheduler/InstagramAccessibilityService.kt <<'KOTLIN'
+          package com.rushx.reelscheduler
+
+          import android.accessibilityservice.AccessibilityService
+          import android.os.Bundle
+          import android.os.Handler
+          import android.os.Looper
+          import android.view.accessibility.AccessibilityEvent
+          import android.view.accessibility.AccessibilityNodeInfo
+          import java.util.Locale
+
+          class InstagramAccessibilityService : AccessibilityService() {
+              private val handler = Handler(Looper.getMainLooper())
+              private var activeId: Long? = null
+              private var step = Step.FIND_SHARE
+              private var startedAt = 0L
+
+              private enum class Step { FIND_SHARE, FIND_RECIPIENT_OR_SEARCH, FIND_RECIPIENT, FIND_SEND }
+
+              private val shareWords = listOf("share", "partilhar", "compartilhar", "send", "enviar")
+              private val searchWords = listOf("search", "pesquisar", "procurar")
+              private val sendWords = listOf("send", "enviar")
+
+              private val scanner = object : Runnable {
+                  override fun run() {
+                      scan()
+                      if (activeId != null) handler.postDelayed(this, 650)
+                  }
+              }
+
+              override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+                  if (event?.packageName?.toString() != "com.instagram.android") return
+                  val repo = JobRepository(this)
+                  val job = repo.activeJob() ?: return
+                  if (activeId != job.id) {
+                      activeId = job.id
+                      step = Step.FIND_SHARE
+                      startedAt = System.currentTimeMillis()
+                      handler.removeCallbacks(scanner)
+                      handler.postDelayed(scanner, 900)
+                  }
+              }
+
+              override fun onInterrupt() = Unit
+
+              private fun scan() {
+                  val repo = JobRepository(this)
+                  val job = repo.activeJob() ?: run { stopAutomation(); return }
+                  if (System.currentTimeMillis() - startedAt > 60_000L) {
+                      repo.upsert(job.copy(status = ScheduledReel.STATUS_FAILED))
+                      repo.setActiveJobId(null)
+                      Notifier.show(this, "Reel not sent", "Instagram’s interface didn’t match the automation. Open the app and try Test/Send again.")
+                      stopAutomation()
+                      return
+                  }
+
+                  val root = rootInActiveWindow ?: return
+                  when (step) {
+                      Step.FIND_SHARE -> {
+                          val share = findByWords(root, shareWords)
+                          if (share != null && clickNodeOrParent(share)) {
+                              step = Step.FIND_RECIPIENT_OR_SEARCH
+                              handler.postDelayed({ scan() }, 900)
+                          }
+                      }
+
+                      Step.FIND_RECIPIENT_OR_SEARCH -> {
+                          val person = findRecipientResult(root, job.recipient)
+                          if (person != null && clickNodeOrParent(person)) {
+                              step = Step.FIND_SEND
+                              handler.postDelayed({ scan() }, 600)
+                              return
+                          }
+
+                          val editable = findEditable(root) ?: findByWords(root, searchWords)
+                          if (editable != null && setText(editable, job.recipient)) {
+                              step = Step.FIND_RECIPIENT
+                              handler.postDelayed({ scan() }, 1200)
+                          }
+                      }
+
+                      Step.FIND_RECIPIENT -> {
+                          val person = findRecipientResult(root, job.recipient)
+                          if (person != null && clickNodeOrParent(person)) {
+                              step = Step.FIND_SEND
+                              handler.postDelayed({ scan() }, 650)
+                          }
+                      }
+
+                      Step.FIND_SEND -> {
+                          val send = findByWords(root, sendWords)
+                          if (send != null && clickNodeOrParent(send)) {
+                              repo.upsert(job.copy(status = ScheduledReel.STATUS_SENT))
+                              repo.setActiveJobId(null)
+                              Notifier.show(this, "Reel sent", "Scheduled Reel sent to @${job.recipient}.")
+                              stopAutomation()
+                          }
+                      }
+                  }
+              }
+
+              private fun stopAutomation() {
+                  activeId = null
+                  handler.removeCallbacks(scanner)
+              }
+
+              private fun normalized(s: CharSequence?): String =
+                  s?.toString()?.trim()?.lowercase(Locale.ROOT) ?: ""
+
+              private fun labels(node: AccessibilityNodeInfo): List<String> = listOf(
+                  normalized(node.text),
+                  normalized(node.contentDescription),
+                  normalized(node.hintText)
+              ).filter { it.isNotBlank() }
+
+              private fun findByWords(root: AccessibilityNodeInfo, words: List<String>): AccessibilityNodeInfo? {
+                  val queue = ArrayDeque<AccessibilityNodeInfo>()
+                  queue.add(root)
+                  var fallback: AccessibilityNodeInfo? = null
+                  while (queue.isNotEmpty()) {
+                      val n = queue.removeFirst()
+                      val ls = labels(n)
+                      if (ls.any { label -> words.any { w -> label == w } }) return n
+                      if (fallback == null && ls.any { label -> words.any { w -> label.contains(w) } }) fallback = n
+                      for (i in 0 until n.childCount) n.getChild(i)?.let(queue::add)
+                  }
+                  return fallback
+              }
+
+              private fun findRecipientResult(root: AccessibilityNodeInfo, text: String): AccessibilityNodeInfo? {
+                  val target = text.trim().removePrefix("@").lowercase(Locale.ROOT)
+                  if (target.isBlank()) return null
+
+                  val queue = ArrayDeque<AccessibilityNodeInfo>()
+                  queue.add(root)
+                  var containsFallback: AccessibilityNodeInfo? = null
+
+                  while (queue.isNotEmpty()) {
+                      val n = queue.removeFirst()
+
+                      // Critical: after ACTION_SET_TEXT the search box itself contains the recipient.
+                      // Never treat an editable/search field as a person result.
+                      if (!n.isEditable && hasClickableSelfOrParent(n)) {
+                          for (label in labels(n)) {
+                              val clean = label.removePrefix("@").trim()
+                              if (clean == target) return n
+                              if (containsFallback == null && clean.contains(target)) {
+                                  containsFallback = n
+                              }
+                          }
+                      }
+
+                      for (i in 0 until n.childCount) n.getChild(i)?.let(queue::add)
+                  }
+
+                  return containsFallback
+              }
+
+              private fun hasClickableSelfOrParent(node: AccessibilityNodeInfo): Boolean {
+                  var current: AccessibilityNodeInfo? = node
+                  repeat(6) {
+                      if (current?.isClickable == true) return true
+                      current = current?.parent
+                  }
+                  return false
+              }
+
+              private fun findEditable(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
+                  val queue = ArrayDeque<AccessibilityNodeInfo>()
+                  queue.add(root)
+                  while (queue.isNotEmpty()) {
+                      val n = queue.removeFirst()
+                      if (n.isEditable) return n
+                      for (i in 0 until n.childCount) n.getChild(i)?.let(queue::add)
+                  }
+                  return null
+              }
+
+              private fun setText(node: AccessibilityNodeInfo, text: String): Boolean {
+                  val target = if (node.isEditable) node else findEditable(node) ?: node
+                  target.performAction(AccessibilityNodeInfo.ACTION_FOCUS)
+                  return target.performAction(
+                      AccessibilityNodeInfo.ACTION_SET_TEXT,
+                      Bundle().apply {
+                          putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text)
+                      }
+                  )
+              }
+
+              private fun clickNodeOrParent(node: AccessibilityNodeInfo): Boolean {
+                  var current: AccessibilityNodeInfo? = node
+                  repeat(6) {
+                      if (current?.isClickable == true && current?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true) {
+                          return true
+                      }
+                      current = current?.parent
+                  }
+                  return node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+              }
+          }
+          KOTLIN
+      - name: Apply Android theme hotfix
+        run: |
+          sed -i 's#parent="Theme.AppCompat.Translucent.NoActionBar"#parent="Theme.AppCompat.DayNight.NoActionBar"#' ReelSchedulerAndroid/app/src/main/res/values/styles.xml
+      - name: Build debug APK
+        working-directory: ReelSchedulerAndroid
+        run: gradle assembleDebug --stacktrace
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ReelScheduler-recipient-autoselect-apk
+          path: ReelSchedulerAndroid/app/build/outputs/apk/debug/app-debug.apk
