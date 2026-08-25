@@ -3,6 +3,8 @@ name: Build Reel Scheduler APK
 on:
   push:
     branches: [ reel-scheduler-apk-build ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
