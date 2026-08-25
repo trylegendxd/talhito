@@ -35,46 +35,7 @@ jobs:
 
       - name: Apply recipient auto-select fix
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          p = Path('ReelSchedulerAndroid/app/src/main/java/com/rushx/reelscheduler/InstagramAccessibilityService.kt')
-          s = p.read_text()
-          s = s.replace('findExactOrContains(root, job.recipient)', 'findRecipientResult(root, job.recipient)')
-          replacement = r'''    private fun findRecipientResult(root: AccessibilityNodeInfo, text: String): AccessibilityNodeInfo? {
-                  val target = text.trim().removePrefix("@").lowercase(Locale.ROOT)
-                  if (target.isBlank()) return null
-                  val queue = ArrayDeque<AccessibilityNodeInfo>()
-                  queue.add(root)
-                  var fallback: AccessibilityNodeInfo? = null
-                  while (queue.isNotEmpty()) {
-                      val n = queue.removeFirst()
-                      if (!n.isEditable && hasClickableSelfOrParent(n)) {
-                          for (label in labels(n)) {
-                              val clean = label.removePrefix("@").trim()
-                              if (clean == target) return n
-                              if (fallback == null && clean.contains(target)) fallback = n
-                          }
-                      }
-                      for (i in 0 until n.childCount) n.getChild(i)?.let(queue::add)
-                  }
-                  return fallback
-              }
-
-              private fun hasClickableSelfOrParent(node: AccessibilityNodeInfo): Boolean {
-                  var current: AccessibilityNodeInfo? = node
-                  repeat(6) {
-                      if (current?.isClickable == true) return true
-                      current = current?.parent
-                  }
-                  return false
-              }
-
-'''
-          s = re.sub(r'    private fun findExactOrContains\(.*?\n    private fun findEditable', replacement + '    private fun findEditable', s, flags=re.S)
-          s = s.replace('handler.postDelayed({ scan() }, 900)\n                }\n            }\n            Step.FIND_RECIPIENT ->', 'handler.postDelayed({ scan() }, 1200)\n                }\n            }\n            Step.FIND_RECIPIENT ->')
-          p.write_text(s)
-          PY
+          python3 -c "from pathlib import Path; p=Path('ReelSchedulerAndroid/app/src/main/java/com/rushx/reelscheduler/InstagramAccessibilityService.kt'); s=p.read_text(); old='            val n = queue.removeFirst()\\n            for (label in labels(n)) {'; new='            val n = queue.removeFirst()\\n            if (n.isEditable) {\\n                for (i in 0 until n.childCount) n.getChild(i)?.let(queue::add)\\n                continue\\n            }\\n            for (label in labels(n)) {'; s=s.replace(old,new,1); s=s.replace('handler.postDelayed({ scan() }, 900)', 'handler.postDelayed({ scan() }, 1200)', 1); p.write_text(s)"
 
       - name: Add background reliability
         run: |
@@ -89,12 +50,10 @@ jobs:
               override fun onReceive(context: Context, intent: Intent?) {
                   val action = intent?.action ?: return
                   if (action != Intent.ACTION_BOOT_COMPLETED && action != Intent.ACTION_MY_PACKAGE_REPLACED) return
-
                   if (!AlarmScheduler.canScheduleExact(context)) {
-                      Notifier.show(context, "Reel Scheduler needs attention", "Allow Alarms & reminders again so scheduled Reels can run in the background.")
+                      Notifier.show(context, "Reel Scheduler needs attention", "Allow Alarms & reminders so scheduled Reels can run in the background.")
                       return
                   }
-
                   val repo = JobRepository(context)
                   val now = System.currentTimeMillis()
                   repo.all()
@@ -109,16 +68,7 @@ jobs:
           }
           KOTLIN
 
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path('ReelSchedulerAndroid/app/src/main/java/com/rushx/reelscheduler/TriggerActivity.kt')
-          s = p.read_text()
-          if 'android.view.WindowManager' not in s:
-              s = s.replace('import android.os.Bundle\n', 'import android.os.Bundle\nimport android.view.WindowManager\n')
-          if 'FLAG_TURN_SCREEN_ON' not in s:
-              s = s.replace('        super.onCreate(savedInstanceState)\n', '        super.onCreate(savedInstanceState)\n        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)\n')
-          p.write_text(s)
-          PY
+          python3 -c "from pathlib import Path; p=Path('ReelSchedulerAndroid/app/src/main/java/com/rushx/reelscheduler/TriggerActivity.kt'); s=p.read_text(); s=s.replace('import android.os.Bundle\\n','import android.os.Bundle\\nimport android.view.WindowManager\\n'); s=s.replace('        super.onCreate(savedInstanceState)\\n','        super.onCreate(savedInstanceState)\\n        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)\\n'); p.write_text(s)"
 
           cat > ReelSchedulerAndroid/app/src/main/AndroidManifest.xml <<'XML'
           <?xml version="1.0" encoding="utf-8"?>
@@ -126,16 +76,13 @@ jobs:
               <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
               <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
               <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
               <queries>
                   <package android:name="com.instagram.android" />
               </queries>
-
               <application
                   android:allowBackup="true"
                   android:label="Reel Scheduler"
                   android:theme="@style/Theme.ReelScheduler">
-
                   <activity
                       android:name=".TriggerActivity"
                       android:excludeFromRecents="true"
@@ -143,7 +90,6 @@ jobs:
                       android:noHistory="true"
                       android:turnScreenOn="true"
                       android:theme="@style/Theme.ReelScheduler.Trigger" />
-
                   <activity
                       android:name=".MainActivity"
                       android:exported="true">
@@ -157,7 +103,6 @@ jobs:
                           <data android:mimeType="text/plain" />
                       </intent-filter>
                   </activity>
-
                   <receiver
                       android:name=".BootReceiver"
                       android:enabled="true"
@@ -167,7 +112,6 @@ jobs:
                           <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                       </intent-filter>
                   </receiver>
-
                   <service
                       android:name=".InstagramAccessibilityService"
                       android:exported="false"
