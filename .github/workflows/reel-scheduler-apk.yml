@@ -24,11 +24,14 @@ jobs:
           gradle-version: '8.9'
       - name: Decode source
         run: |
-          base64 -d reelscheduler-source.b64 > reelscheduler.zip
+          cat reelscheduler-source.part* > reelscheduler-full.b64
+          test "$(wc -c < reelscheduler-full.b64)" -eq 29196
+          base64 -d reelscheduler-full.b64 > reelscheduler.zip
+          unzip -t reelscheduler.zip
           unzip -q reelscheduler.zip
       - name: Build debug APK
         working-directory: ReelSchedulerAndroid
-        run: gradle assembleDebug
+        run: gradle assembleDebug --stacktrace
       - uses: actions/upload-artifact@v4
         with:
           name: ReelScheduler-debug-apk
