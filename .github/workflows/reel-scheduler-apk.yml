@@ -31,6 +31,9 @@ jobs:
           base64 -d reelscheduler-full.b64 > reelscheduler.zip
           unzip -t reelscheduler.zip
           unzip -q reelscheduler.zip
+      - name: Apply Android theme hotfix
+        run: |
+          sed -i 's#parent="Theme.AppCompat.Translucent.NoActionBar"#parent="Theme.AppCompat.DayNight.NoActionBar"#' ReelSchedulerAndroid/app/src/main/res/values/styles.xml
       - name: Build debug APK
         working-directory: ReelSchedulerAndroid
         run: gradle assembleDebug --stacktrace
