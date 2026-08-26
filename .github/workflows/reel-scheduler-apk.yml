@@ -1,4 +1,4 @@
-name: Build Reel Scheduler Background APK
+name: Build Reel Scheduler v0.3 APK
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Decode source
+      - name: Decode base source
         run: |
           cat reelscheduler-source.part* > reelscheduler-full.b64
           test "$(wc -c < reelscheduler-full.b64)" -eq 29196
@@ -33,106 +33,73 @@ jobs:
           unzip -t reelscheduler.zip
           unzip -q reelscheduler.zip
 
-      - name: Apply recipient auto-select fix
+      - name: Apply v0.3 background trigger patches
         run: |
-          python3 -c "from pathlib import Path; p=Path('ReelSchedulerAndroid/app/src/main/java/com/rushx/reelscheduler/InstagramAccessibilityService.kt'); s=p.read_text(); old='            val n = queue.removeFirst()\\n            for (label in labels(n)) {'; new='            val n = queue.removeFirst()\\n            if (n.isEditable) {\\n                for (i in 0 until n.childCount) n.getChild(i)?.let(queue::add)\\n                continue\\n            }\\n            for (label in labels(n)) {'; s=s.replace(old,new,1); s=s.replace('handler.postDelayed({ scan() }, 900)', 'handler.postDelayed({ scan() }, 1200)', 1); p.write_text(s)"
+          cp reel-v3-patches/AlarmScheduler.kt ReelSchedulerAndroid/app/src/main/java/com/rushx/reelscheduler/AlarmScheduler.kt
+          cp reel-v3-patches/AlarmReceiver.kt ReelSchedulerAndroid/app/src/main/java/com/rushx/reelscheduler/AlarmReceiver.kt
+          cp reel-v3-patches/InstagramAccessibilityService.kt ReelSchedulerAndroid/app/src/main/java/com/rushx/reelscheduler/InstagramAccessibilityService.kt
+          cp reel-v3-patches/BootReceiver.kt ReelSchedulerAndroid/app/src/main/java/com/rushx/reelscheduler/BootReceiver.kt
+          cp reel-v3-patches/AndroidManifest.xml ReelSchedulerAndroid/app/src/main/AndroidManifest.xml
 
-      - name: Add background reliability
-        run: |
-          cat > ReelSchedulerAndroid/app/src/main/java/com/rushx/reelscheduler/BootReceiver.kt <<'KOTLIN'
-          package com.rushx.reelscheduler
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('ReelSchedulerAndroid/app/src/main/java/com/rushx/reelscheduler/MainActivity.kt')
+          s=p.read_text()
+          s=s.replace('findViewById<Button>(R.id.alarmButton).setOnClickListener { requestExactAlarmAccess() }', 'findViewById<Button>(R.id.alarmButton).setOnClickListener { requestExactAlarmAccess() }\n        findViewById<Button>(R.id.overlayButton).setOnClickListener { requestOverlayAccess() }')
+          s=s.replace('''        val job = ScheduledReel(''', '''        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+            toast("Allow Appear on top so Android can open Instagram while Reel Scheduler is closed")
+            requestOverlayAccess()
+            return
+        }
 
-          import android.content.BroadcastReceiver
-          import android.content.Context
-          import android.content.Intent
+        val job = ScheduledReel(''')
+          old='''    private fun updateSetupStatus() {
+        val access = if (isAccessibilityEnabled()) "✓ Instagram automation" else "✗ Instagram automation"
+        val alarm = if (AlarmScheduler.canScheduleExact(this)) "✓ Exact timing" else "✗ Exact timing"
+        setupStatus.text = "$access\\n$alarm\\nInstagram must already be logged in."
+    }
+'''
+          new='''    private fun updateSetupStatus() {
+        val access = if (isAccessibilityEnabled()) "✓ Instagram automation" else "✗ Instagram automation"
+        val alarm = if (AlarmScheduler.canScheduleExact(this)) "✓ Exact timing" else "✗ Exact timing"
+        val overlay = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this)) "✓ Background launch" else "✗ Background launch (Appear on top)"
+        setupStatus.text = "$access\\n$alarm\\n$overlay\\nInstagram must already be logged in."
+    }
 
-          class BootReceiver : BroadcastReceiver() {
-              override fun onReceive(context: Context, intent: Intent?) {
-                  val action = intent?.action ?: return
-                  if (action != Intent.ACTION_BOOT_COMPLETED && action != Intent.ACTION_MY_PACKAGE_REPLACED) return
-                  if (!AlarmScheduler.canScheduleExact(context)) {
-                      Notifier.show(context, "Reel Scheduler needs attention", "Allow Alarms & reminders so scheduled Reels can run in the background.")
-                      return
-                  }
-                  val repo = JobRepository(context)
-                  val now = System.currentTimeMillis()
-                  repo.all()
-                      .filter { it.status == ScheduledReel.STATUS_SCHEDULED || it.status == ScheduledReel.STATUS_WAITING_UNLOCK }
-                      .forEach { job ->
-                          val trigger = if (job.triggerAtMillis > now) job.triggerAtMillis else now + 5_000L
-                          val restored = job.copy(triggerAtMillis = trigger, status = ScheduledReel.STATUS_SCHEDULED)
-                          repo.upsert(restored)
-                          AlarmScheduler.schedule(context, restored)
-                      }
-              }
-          }
-          KOTLIN
+    private fun requestOverlayAccess() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
+        } else {
+            toast("Background launch is already allowed")
+        }
+    }
+'''
+          s=s.replace(old,new)
+          p.write_text(s)
 
-          python3 -c "from pathlib import Path; p=Path('ReelSchedulerAndroid/app/src/main/java/com/rushx/reelscheduler/TriggerActivity.kt'); s=p.read_text(); s=s.replace('import android.os.Bundle\\n','import android.os.Bundle\\nimport android.view.WindowManager\\n'); s=s.replace('        super.onCreate(savedInstanceState)\\n','        super.onCreate(savedInstanceState)\\n        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)\\n'); p.write_text(s)"
+          p=Path('ReelSchedulerAndroid/app/src/main/res/layout/activity_main.xml')
+          s=p.read_text()
+          marker='''        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="QUEUE"'''
+          button='''        <Button
+            android:id="@+id/overlayButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button_secondary_bg"
+            android:text="Allow background launch (Appear on top)"
+            android:textColor="@color/textPrimary" />
 
-          cat > ReelSchedulerAndroid/app/src/main/AndroidManifest.xml <<'XML'
-          <?xml version="1.0" encoding="utf-8"?>
-          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-              <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-              <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-              <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-              <queries>
-                  <package android:name="com.instagram.android" />
-              </queries>
-              <application
-                  android:allowBackup="true"
-                  android:label="Reel Scheduler"
-                  android:theme="@style/Theme.ReelScheduler">
-                  <activity
-                      android:name=".TriggerActivity"
-                      android:excludeFromRecents="true"
-                      android:exported="false"
-                      android:noHistory="true"
-                      android:turnScreenOn="true"
-                      android:theme="@style/Theme.ReelScheduler.Trigger" />
-                  <activity
-                      android:name=".MainActivity"
-                      android:exported="true">
-                      <intent-filter>
-                          <action android:name="android.intent.action.MAIN" />
-                          <category android:name="android.intent.category.LAUNCHER" />
-                      </intent-filter>
-                      <intent-filter>
-                          <action android:name="android.intent.action.SEND" />
-                          <category android:name="android.intent.category.DEFAULT" />
-                          <data android:mimeType="text/plain" />
-                      </intent-filter>
-                  </activity>
-                  <receiver
-                      android:name=".BootReceiver"
-                      android:enabled="true"
-                      android:exported="true">
-                      <intent-filter>
-                          <action android:name="android.intent.action.BOOT_COMPLETED" />
-                          <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-                      </intent-filter>
-                  </receiver>
-                  <service
-                      android:name=".InstagramAccessibilityService"
-                      android:exported="false"
-                      android:label="Reel Scheduler automation"
-                      android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-                      <intent-filter>
-                          <action android:name="android.accessibilityservice.AccessibilityService" />
-                      </intent-filter>
-                      <meta-data
-                          android:name="android.accessibilityservice"
-                          android:resource="@xml/accessibility_service_config" />
-                  </service>
-              </application>
-          </manifest>
-          XML
+'''
+          s=s.replace(marker,button+marker)
+          p.write_text(s)
+          PY
 
-          sed -i 's/versionCode = 1/versionCode = 2/' ReelSchedulerAndroid/app/build.gradle.kts
-          sed -i 's/versionName = "0.1.0"/versionName = "0.2.0-background"/' ReelSchedulerAndroid/app/build.gradle.kts
-
-      - name: Apply Android theme hotfix
-        run: |
+          sed -i 's/versionCode = 1/versionCode = 3/' ReelSchedulerAndroid/app/build.gradle.kts
+          sed -i 's/versionName = "0.1.0"/versionName = "0.3.0-background-direct"/' ReelSchedulerAndroid/app/build.gradle.kts
           sed -i 's#parent="Theme.AppCompat.Translucent.NoActionBar"#parent="Theme.AppCompat.DayNight.NoActionBar"#' ReelSchedulerAndroid/app/src/main/res/values/styles.xml
 
       - name: Build debug APK
@@ -141,5 +108,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ReelScheduler-background-apk
+          name: ReelScheduler-v0.3-background-direct-apk
           path: ReelSchedulerAndroid/app/build/outputs/apk/debug/app-debug.apk
